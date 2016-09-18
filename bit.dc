@@ -30,9 +30,7 @@
 ##
 ##  The top section lists the operators. These are persistent macros intended to be called by the user.
 ##  The middle section lists the helper functions. These are persistent macros intended to be called by the operators and each other.
-##  The bottom section lists the temporary registers. These registers hold transient values or code and are left unchanged at the end of 
-
-an operation.
+##  The bottom section lists the temporary registers. These registers hold transient values or code and are left unchanged at the end of an operation.
 
 [[dc: stack empty]nAP2Q]s?
 
