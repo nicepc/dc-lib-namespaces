@@ -1,0 +1,156 @@
+##  Author:     Joseph Reed
+##  Timestamp:  2016-09-18 02:03-08:00
+##  Contact:    josephreed2600@gmail.com
+##  File:       bit.dc
+##  Version:    1.0
+##  Topic:      Bitwise operations for `dc`
+##
+##  In this file:
+##
+##  Rgstr   Function      I        O
+## ----------------------------------------
+##    &    Bitwise AND    2        1
+##    |    Bitwise OR     2        1
+##    ^    Bitwise XOR    2        1
+##    \    Bitwise NOT    1        1        This function flips the bits of the top number
+##    !    Bitwise NOT    2        1        This function flips the bits of the top two numbers, using the longer number's length in bits
+## ----------------------------------------
+##    ?    Error message  0        0        This function displays a message indicating that there are not enough values on the stack
+##    #    Array to int   A[]      1        This function converts the boolean array A[] to a number and pushes that number on the stack
+##    B    Run-once code  2        1        This function contains code that is used once by multiple functions
+## ----------------------------------------
+##    $    Int to array   1        a[],b[]  This function splits the top of stack to either a[] or b[]
+##    a,b  Input parsing  -        -        These registers and their arrays hold input while an operation is taking place
+##    A    Output storage -        -        This register and its array hold output while an operation is taking place
+##    I    Conditional    -        -        This register contains code that is to be executed in an if-then-else structure
+##    L    Loop code      a[],b[]  A[]      This function contains code that is used in a do-while manner
+##    O    Operator code  2        1        This register contains code that is different for each operator
+##    Z    max(a,b)       a,b      Z        This register contains the maximum of a and b, which represent the lengths of the input
+##
+##  The top section lists the operators. These are persistent macros intended to be called by the user.
+##  The middle section lists the helper functions. These are persistent macros intended to be called by the operators and each other.
+##  The bottom section lists the temporary registers. These registers hold transient values or code and are left unchanged at the end of an operation.
+
+#2o
+#[ladSZ [lbsZ]sI lb>I]sZ        # store length-finding macro in Z
+
+[[dc: stack empty]nAP2Q]s?
+
+[
+#[OPEN B]nAP
+ 0dSaSb                         # initialise temporary a and b              ->a(0),b(0)
+ [2~lbd1+sb:bd0<$]dS$xK+k       # split ToS into b[b]                       (0)->b,b[]
+ [2~lad1+sa:ad0<$]ds$xK+k       # split ToS into a[a]                       (1)->a,a[]
+#lZx
+ ladSZ [lbsZ]SI lb>I            # store longer length in Z                  a,b->Z(0)
+ lZSA                           # copy length of result to A                Z->A(0)
+#lLx                            # execute operation loop                    a[],b[]->A[]
+####
+ [
+ #[OPEN L]nAP
+  lZ1-dddd                      # push five copies of --length              Z->(0,1,2,3,4)
+  sZ                            # decrement Z                               (4)->Z
+  ;a                            # push a[Z]                                 (3),a[]->(3)
+  r                             # rotate (put Z on top)                     (3,2)->(2,3)
+  ;b                            # push b[Z]                                 (3),b[]->(3)
+  lOx                           # execute operation                         (2,3)->(2)
+  r                             # rotate (put Z on top)                     (1,2)->(2,1)
+  :A                            # store in A[Z]                             (1,2)->A[]
+ #[CLOSE L: ]np
+  0<L                           # if 0<Z, repeat                            (0)->
+ ]dSLx                          # Loop                                      a[],b[]->A[]
+####
+#[ladSZ[lbsZ]sI lb>I]sZ         # reset Z to hold length macro
+ L$ZLIZLLZLOZLZLaLb++++++0*K+k  # destroy temporary $, a, b, I, L, O, Z     Z(0),a(0),b(0)->
+ l#x                            # reassemble number in A and push it        A[]->(0)
+#[CLOSE B: ]np
+]sB                             # Bitwise operation                         (0,1)->(0)
+
+####
+#[
+##[OPEN L]nAP
+# lZ1-dddd                       # push five copies of --length              Z->(0,1,2,3,4)
+# sZ                             # decrement Z                               (4)->Z
+# ;a                             # push a[Z]                                 (3),a[]->(3)
+# r                              # rotate (put Z on top)                     (3,2)->(2,3)
+# ;b                             # push b[Z]                                 (3),b[]->(3)
+# lOx                            # execute operation                         (2,3)->(2)
+# r                              # rotate (put Z on top)                     (1,2)->(2,1)
+# :A                             # store in A[Z]                             (1,2)->A[]
+##[CLOSE L: ]np
+# 0<L                            # if 0<Z, repeat                            (0)->
+#]sL                             # Loop                                      a[],b[]->A[]
+####
+
+[
+#[OPEN POUND]nAP
+ lASZ                           # push length of A[] on Z
+ 0sA                            # set accumulator A=0
+ [
+  lZ1-dd                        # push three copies of --length
+  sZ                            # decrement Z
+  ;A                            # push A[Z]
+  lA2*                          # shift A left 1b
+  +sA                           # add next bit to A
+  0<L                           # if 0<Z, repeat
+ ]dSLx
+ LLZLZ+0*K+k                    # destroy temporary L, Z
+ LA                             # pop result from A and push it
+#[CLOSE POUND: ]np
+]s#                             # #: reassemble number: A[]->(0)
+
+[z2>?[*]SO lBx]s&               # &: bitwise AND: (0,1)->(0)
+[z2>?[+2%]SO lBx]s^             # ^: bitwise XOR: (0,1)->(0)
+[z2>?[1r-r1r-*1r-]SO lBx]s|     # |: bitwise OR: (0,1)->(0)
+
+[
+ 0Sa                            # initialise temporary a                    ->a(0)
+ [2~lad1+sa:ad0<$]dS$xK+k       # split ToS into a[a]                       (0)->a,a[]
+ ladSZSA                        # store length of a[] in Z and A            a->Z(0),A(0)
+ [
+  lZ1-ddd                       # push four copies of --length              Z->(0,1,2,3)
+  sZ                            # decrement Z                               (3)->Z
+  ;a                            # push a[Z]                                 (2),a[]->(2)
+  1r-                           # !a[Z]
+  r                             # rotate (put Z on top)
+  :A                            # store in A[Z]                             (1,2)->A[]
+  0<L                           # if 0<Z, repeat                            (0)->
+ ]dSLx
+ L$ZLLZLZLa+++0*K+k             # destroy temporary $, a, L, Z              Z(0),a(0)->
+ l#x                            #                                           A[]->(0)
+]s\                             # \: bitwise complement of a (?)            (0)->(0)
+                                # aka a=!a
+# {a,b}->{!a,!b} with their own respective widths:
+# r l\x r l\x
+
+[
+ 0dSaSb                         # initialise temporary a and b              ->a(0),b(0)
+ [2~lbd1+sb:bd0<$]dS$xK+k       # split ToS into b[b]                       (0)->b,b[]
+ [2~lad1+sa:ad0<$]ds$xK+k       # split ToS into a[a]                       (1)->a,a[]
+#lZx
+ ladSZ [lbsZ]SI lb>I            # store longer length in Z                  a,b->Z(0)
+ lZdSZdSASA                     # put two copies of length on A and Z       Z(0)->A(0,1),Z(0,1)
+ [
+  lZ1-ddd                       # push four copies of --length              Z->(0,1,2,3)
+  sZ                            # decrement Z                               (3)->Z
+  ;a                            # push a[Z]                                 (2),a[]->(2)
+  1r-                           # !a[Z]
+  r                             # rotate (put Z on top)
+  :A                            # store in A[Z]                             (1,2)->A[]
+  0<L                           # if 0<Z, repeat                            (0)->
+ ]dSLx
+ L$ZLIZLLZLZ+++0*K+k            # destroy temporary $, L, Z                 Z(1)->
+ l#x                            # push b                                    A[]->(1)
+ [
+  lZ1-ddd                       # push four copies of --length              Z->(0,1,2,3)
+  sZ                            # decrement Z                               (3)->Z
+  ;b                            # push b[Z]                                 (2),b[]->(2)
+  1r-                           # !b[Z]
+  r                             # rotate (put Z on top)
+  :A                            # store in A[Z]                             (1,2)->A[]
+  0<L                           # if 0<Z, repeat                            (0)->
+ ]dSLx
+ LLZLZLaLb+++0*K+k              # destroy temporary a, b, L, Z              Z(0),a(0),b(0)->
+ l#x                            #                                           A[]->(0)
+#[ladSZ[lbsZ]sI lb>I]sZ         # reset Z to hold length macro
+]s!                             # !: bitwise NOT (2 args)
