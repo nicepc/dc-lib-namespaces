@@ -1,0 +1,23 @@
++[
+ + [
+ +  0SL                           #  Initialize L
+ +  [0r-]S-                       #  `Subtract from 0' macro
+ +  [0*dSa2Q]S0                   #  `It's 0, so let's just push it and split' macro
+ +  [la1+sa]S+                    #  `Increment a because something wasn't working right' macro
+ +  d1>-                          #  If input is less than 1, it's either negative or 0; take its opposite
+ +  d1>0                          #  If it's still less than 1, then it's 0; say so and bail
+ +  0Sa                           #  Initialize a, which will count the digits of the input
+ +  dI!>+                         #  If input>=I (input base), increment a (something was wrong with one- or two-digit numbers, I think)
+ +  [
+ +   la1+sa                       #   Increment a
+ +   10~0*+                       #   10 is 10baseI, so this will be the number of digits in the number represented with the input radix
+ +                                #   10~ slices rightmost digit, 0* makes it 0, + adds the remaining digits plus 0
+ +   dI!>L                        #   If the input is still greater than I, repeat
+ +  ]dsLx                         #   Execute this loop and name it L
+ + ]x                             #  Do all that stuff up there: This is nested because in the case where the input is 0, we want to skip
+ +                                #  the testing part, but we still need to do the cleanup to restore registers to their original values
+ + 0*                             #  Make residual ToS:=0
+ + La+                            #  Load length and add it to 0
+ + L-Z L0Z LLZ L+Z +++0* K+k      #  Load macros from registers matching /[-0L+]/, add them, make them 0, and add 0 to the precision
+ +]sZ                             # This will be named function Z, after the `Z' command
+ +                                # The primary difference is that this is the length of a number as represented with the input radix
