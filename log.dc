@@ -1,0 +1,9 @@
+[sbsx0se[le1+dselbr^lx>I]sIlble^lx>I[K10r^1r/sd[leld-dselbr^lx!>D]sDlble^lx!>D]sNK0<Nf]sE
+
+# TODO
+######
+# Fix register usage (use stacks)
+# Come up with a better name?
+# Garbage collection to destroy subroutines
+# Figure out how to make it work with K > 0
+#   Since exponentiation only works with non-negative integers, how can we test a logarithm for greater precision? Some form of rooting?
