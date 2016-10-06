@@ -1,0 +1,26 @@
+[
+ SpdSbSn                                # p: power (well, reciprocal: 3 is 3rd root); b: base (number to test); n: target (b^p should equal n)
+                                        # We're calculating b, which is the p-th root of n
+ [
+  lbdn [^]n lpdn [=]n ^n [>]n lnn AP
+  lbdvdsb [b:=]n rn [v=]n dn AP
+  dn [^]n lpdn ^[<?]n lndn AP
+  <L
+ ]sL
+ lb lp ^ ln <L
+ lbdn [^]n lpn [==]n lnn AP
+]sR
+
+#####
+
+#[SpdSbSn[lbdn[^]nlpdn[=]n^n[>]nlnnAPlbdvdsb[b:=]nrn[v=]ndnAPdn[^]nlpdn^[<?]nlndnAP<L]sLlblp^ln<Llbdn[^]nlpn[!>]nlnnAP]sR
+
+# TODO
+########
+# Docs
+# Add portion to increment b until b^p>n, then decrement b once
+# Add precision code
+# Fix register/stack usage
+# Eventually, splice out the output-producing genes
+# Name things better: must be compatible with any/all other macros in this repository
+# Support/test negative and rational radicands and roots (or whatever)
