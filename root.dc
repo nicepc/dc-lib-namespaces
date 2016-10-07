@@ -11,9 +11,11 @@
  lbdn [^]n lpn [==]n lnn AP
 ]sR
 
+# update the above code to match that below
+
 #####
 
-#[SpdSbSn[lbdn[^]nlpdn[=]n^n[>]nlnnAPlbdvdsb[b:=]nrn[v=]ndnAPdn[^]nlpdn^[<?]nlndnAP<L]sLlblp^ln<Llbdn[^]nlpn[!>]nlnnAP]sR
+#[SpdSbSn[lbdn[^]nlpdn[=]n^n[>]nlnnAPlbdvdsb[b:=]nrn[v=]ndnAPdn[^]nlpdn^[<?]nlndnAP<L]sLlblp^ln<Llbn[^]nlpn[!>]nlnnAP[]SO[lb1+dsbdn[^]nlpdn^[=]ndn[>?]nlndnAP>L[lb1-sb]sO]sLlblp^ln>LlOxlbdn[^]nlpn[!>]nlnnAP]sR
 
 # TODO
 ########
