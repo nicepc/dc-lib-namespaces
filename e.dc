@@ -1,0 +1,9 @@
+[[k=]n   Kp
+ [k+1=]n 1+pd2*k
+ [10^(k+1)=]n 10r^p
+ [t:=]n p
+ dd
+ [t+1=]n 1+p
+ [(t+1)/t=]n dn[/]nrdn[=]n /p
+ [((t+1)/t)^t=]n dn[^]nrdn[=]n^K2/1-k1/p
+]sEc0klExf
