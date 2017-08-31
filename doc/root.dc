@@ -14,7 +14,7 @@ SbdSaSA
 [lb^]SF
 
 # execute a=O(a) until F(a)<A
-# id eat, a=sqrt(a) until a^b<A
+# id est, a=sqrt(a) until a^b<A
 [lalOxdsalFxlA<L]sL lalFxlA<L
 
 # redefine O() to increment by 10^(-K)
