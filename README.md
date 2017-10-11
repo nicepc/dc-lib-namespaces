@@ -12,3 +12,9 @@ This file contains a macro that is similar to the `Z` command, except that it co
 
 ## root.dc
 This file contains a macro that computes the nth root of x, where n is a natural number and x is positive. This macro also works for odd roots of negative numbers. In either case, if the root is not an integer, then it is rounded down.
+
+## e.dc
+This file contains a macro that returns the value of Euler's constant `e`, precise to the current scale.
+
+## factorial.dc
+This file contains a macro that returns the factorial of the number on the top of the stack.
