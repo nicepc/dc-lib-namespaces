@@ -7,7 +7,7 @@
 #]sA
 
 
-[Z0*K+k]sD
+[Z0*K+k]sD # D: General delete function, removes TOS silently
 
 # R: Fetch a row from a matrix, or an element from a row
 [
@@ -24,13 +24,19 @@
  ]SL
  lr1-dsr 0!>L
  
- Sj
+ Si
  [lDx zlz- 0<L]sL zlz-0<L
- Lj
+ Li
  0LLZ*LQZ*Lr*Lz*K+k
 ]sR
 
-
+# E: Fetches the element in row i, column j of matrix A:   A i j | TOS
+[
+ Sj
+ lRx
+ Lj
+ lRx
+]sE
 
 #[Row 1:]nAP  lA1lRxfAPAP
 #[Row 2:]nAP clA2lRxfAPAP
