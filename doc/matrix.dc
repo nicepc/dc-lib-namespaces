@@ -1,0 +1,40 @@
+#[
+#[1 2 3]
+#[4 5 6]
+#[7 8 9]
+#[2 4 6]
+#[9 6 3]
+#]sA
+
+
+[Z0*K+k]sD
+
+# R: Fetch a row from a matrix, or an element from a row
+[
+ Sr
+ z1-Sz
+ x
+ zlz-
+ lr-sr
+ [2Q]SQ
+ [
+  lr1-dsr
+  0!>L
+  lDx
+ ]SL
+ lr1-dsr 0!>L
+ 
+ Sj
+ [lDx zlz- 0<L]sL zlz-0<L
+ Lj
+ 0LLZ*LQZ*Lr*Lz*K+k
+]sR
+
+
+
+#[Row 1:]nAP  lA1lRxfAPAP
+#[Row 2:]nAP clA2lRxfAPAP
+#[Row 3:]nAP clA3lRxfAPAP
+#[Row 4:]nAP clA4lRxfAPAP
+#[Row 5:]nAP clA5lRxfAPAP
+#[Finished]nAP
