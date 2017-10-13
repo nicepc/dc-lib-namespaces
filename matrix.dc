@@ -51,6 +51,23 @@
  0LLZ*Lm*Ln*K+k
 ]sR
 
+# E: Fetch element i,j from matrix(m,n)
+[
+ Sj  # Tgt col j
+ Si  # Tgt row i
+ Sn  # n cols
+ Sm  # m rows
+ []SL
+ 
+ lm ln li lRx # get the ith row of matrix(m,n)
+ ln  1 lj lRx # get the jth row of matrix(n,1), which is row n transposed
+ Se  # Store element as e temporarily
+ # We now have n garbage values to destroy
+ lnsk [lDx lk1-dsk 0<L]sL lk0<L # so let's delete them
+ Le  # Restore element
+ 
+ 0LLZ*Li*Lj*Lm*Ln*K+k
+]sE
 
 #[Row 1:]nAP  lA1lRxfAPAP
 #[Row 2:]nAP clA2lRxfAPAP
