@@ -29,9 +29,9 @@
  
  # The first M-1 rows have (M-1)*n elements
  # Therefore, skip the first (M-1)*n elements by pushing them onto a named stack A
-# #  Try (m-(M-1))*n
- [Skipping ]n lM1-ln*n [ elements]nAP
- lM1-ln*sk [SA lk1-dsk 0<L]sL lk0<L
+ #  Try (m-M)*n
+ [Skipping ]n lmlM-ln*n [ elements]nAP
+ lmlM-ln*sk [SA lk1-dsk 0<L]sL lk0<L
  
  # Row M has n elements
  # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
@@ -39,8 +39,9 @@
  lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
  
  # Restore the first (M-1)*n + n elements from stack A
- [Restoring ]n lMln*n [ elements]nAP
- lMln*sk [LA lk1-dsk 0<L]sL lk0<L
+ #  Try (m-M)*n + n = (m-M+1)*n
+ [Restoring ]n lmlM1--ln*n [ elements]nAP
+ lmlM1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
  
  # Restore the n elements that we copied into stack B
  [Restoring ]n lnn [ copied elements]nAP
