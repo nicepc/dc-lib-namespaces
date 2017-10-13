@@ -70,6 +70,33 @@
  0LLZ*Li*Lj*Lk*Lm*Ln*K+k
 ]sE
 
+# w: Write one value to row i, column j
+#  n*(m-i)+(n-j)
+#  nm-ni+n-j
+#  n(m-n+1)-j
+#  lmln-1+ln*lj- # number of elements after i,j
+# your matrix newValue rows cols row col | TOS
+# your matrix    v       m    n   i   j  | TOS
+[
+ Sj
+ Si
+ Sn
+ Sm
+ Sv
+ 0Sk
+ 
+ # Move the last n*(m-i)+(n-j) elements into stack A
+ lmli-1+ln*lj-sk [SA lk1-dsk 0<L]sL lk0<L
+ # Delete existing element
+ lDx
+ # Insert new element
+ Lv
+ # Restore last bunch of elements from stack A
+ lmli-1+ln*lj-sk [LA lk1-dsk 0<L]sL lk0<L
+ 
+ 0LLZ*Lk*Li*Lj*Lm*Ln*K+k
+]sw
+
 # W: Write n values to row i of matrix(m,n)
 # matrix values your new row here m n i | TOS
 [
@@ -126,5 +153,8 @@
 1 2 3 4 5 6 7 8 9
 #5 3 1 lRxf
 
-3 3 1 3 lSxf
-3 3 2 3 lSxf
+3 3 1 3 lSxfAdPP
+3 3 2 3 lSxfAdPP
+
+0 0 0 3 3 2 lWxfAdPP
+386 3 3 2 2 lwxfAdPP
