@@ -16,39 +16,39 @@
 # 5sk [lXx lkd1-sk 0<L]dsLx     # execute X for k=5..1 or for k=0
 # 5sk [lXx lk1-dsk 0<L]dsLx     # execute X for k=5..1 or for k=0
 
-# R: Extract a row M from a matrix
+# R: Extract a row i from a matrix
 # matrix elements listed in reading order numRows numCols | TOS
 [
- SM  # Requesting row M
+ Si  # Requesting row i
  Sn  # A has n columns
  Sm  # A has m rows
- 
+ 0Sk
  []SL
  
- [Fetching row ]n lMn [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
+ [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
  
- # The first M-1 rows have (M-1)*n elements
- # Therefore, skip the first (M-1)*n elements by pushing them onto a named stack A
- #  Try (m-M)*n
- [Skipping ]n lmlM-ln*n [ elements]nAP
- lmlM-ln*sk [SA lk1-dsk 0<L]sL lk0<L
+ # The first i-1 rows have (i-1)*n elements
+ # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
+ #  Try the number of elements in the last m-i rows: (m-i)*n
+ [Skipping ]n lmli-ln*n [ elements]nAP
+ lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
  
- # Row M has n elements
+ # Row i has n elements
  # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
  [Copying ]n lnn [ elements]nAP
  lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
  
- # Restore the first (M-1)*n + n elements from stack A
- #  Try (m-M)*n + n = (m-M+1)*n
- [Restoring ]n lmlM1--ln*n [ elements]nAP
- lmlM1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
+ # Restore the first (i-1)*n + n elements from stack A
+ #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
+ [Restoring ]n lmli1--ln*n [ elements]nAP
+ lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
  
  # Restore the n elements that we copied into stack B
  [Restoring ]n lnn [ copied elements]nAP
  lnsk [LB lk1-dsk 0<L]sL lk0<L
  
  
- 0LLZ*Lm*Ln*K+k
+ 0LLZ*Li*Lk*Lm*Ln*K+k
 ]sR
 
 # E: Fetch element i,j from matrix(m,n)
@@ -57,6 +57,7 @@
  Si  # Tgt row i
  Sn  # n cols
  Sm  # m rows
+ 0Sk
  []SL
  
  lm ln li lRx # get the ith row of matrix(m,n)
@@ -66,15 +67,64 @@
  lnsk [lDx lk1-dsk 0<L]sL lk0<L # so let's delete them
  Le  # Restore element
  
- 0LLZ*Li*Lj*Lm*Ln*K+k
+ 0LLZ*Li*Lj*Lk*Lm*Ln*K+k
 ]sE
 
-#[Row 1:]nAP  lA1lRxfAPAP
-#[Row 2:]nAP clA2lRxfAPAP
-#[Row 3:]nAP clA3lRxfAPAP
-#[Row 4:]nAP clA4lRxfAPAP
-#[Row 5:]nAP clA5lRxfAPAP
-#[Finished]nAP
+# W: Write n values to row i of matrix(m,n)
+# matrix values your new row here m n i | TOS
+[
+ Si
+ Sn
+ Sm
+ 0Sk
+ []SL
+ 
+ # Push new row of length n onto stack I
+ lnsk [SI lk1-dsk 0<L]sL lk0<L
+ 
+ # Push last m-i rows onto stack A
+ lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
+ 
+ # Delete last n elements, which comprise the existing row i
+ lnsk [lDx lk1-dsk 0<L]sL lk0<L
+ 
+ # Copy in the n elements from stack N
+ lnsk [LI lk1-dsk 0<L]sL lk0<L
+ 
+ # Copy back the last m-i rows from stack A
+ lmli-ln*sk [LA lk1-dsk 0<L]sL lk0<L
+ 
+ 
+ 0LLZ*Li*Lk*Lm*Ln*K+k
+]sW
 
-1 2 3 4 5 6 7 8 9 2 4 6 3 6 9
-5 3 1 lRxf
+# S: Swap rows u and v in matrix(m,n)
+[
+ Sv
+ Su
+ Sn
+ Sm
+ 
+ # Pull row u from matrix
+ lm ln lu lRx
+ # Store u's n elements on stack U
+ lnsk [SU lk1-dsk 0<L]sL lk0<L
+ # Pull row v from matrix
+ lm ln lv lRx
+ # Write row v over row u
+ lm ln lu lWx
+ # Load u's n elements from stack U
+ lnsk [LU lk1-dsk 0<L]sL lk0<L
+ # Write row u over row v
+ lm ln lv lWx
+ 
+ 0Lk*Lm*Ln*Lu*Lv*K+k
+]sS
+
+
+# Tests
+1 2 3 4 5 6 7 8 9
+#5 3 1 lRxf
+
+3 3 1 3 lSxf
+3 3 2 3 lSxf
