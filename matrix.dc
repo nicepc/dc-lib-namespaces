@@ -17,7 +17,8 @@
 # 5sk [lXx lk1-dsk 0<L]dsLx     # execute X for k=5..1 or for k=0
 
 # R: Extract a row i from a matrix
-# matrix elements listed in reading order numRows numCols | TOS
+# @return matrix row | TOS
+# matrix elements entered in reading order numRows numCols | TOS
 [
  Si  # Requesting row i
  Sn  # A has n columns
@@ -52,6 +53,7 @@
 ]sR
 
 # E: Fetch element i,j from matrix(m,n)
+# @return matrix, element
 [
  Sj  # Tgt col j
  Si  # Tgt row i
@@ -71,6 +73,7 @@
 ]sE
 
 # w: Write one value to row i, column j
+# @return matrix
 #  n*(m-i)+(n-j)
 #  nm-ni+n-j
 #  n(m-n+1)-j
@@ -98,6 +101,7 @@
 ]sw
 
 # W: Write n values to row i of matrix(m,n)
+# @return matrix
 # matrix values your new row here m n i | TOS
 [
  Si
@@ -126,6 +130,7 @@
 ]sW
 
 # S: Swap rows u and v in matrix(m,n)
+# @return matrix
 [
  Sv
  Su
@@ -148,13 +153,115 @@
  0Lk*Lm*Ln*Lu*Lv*K+k
 ]sS
 
+# : Multiply row i by scalar s
+# @return matrix row | TOS
+# your matrix m n i s | TOS
+[
+ Ss  # scalar
+ Si  # row index
+ Sn
+ Sm
+ 0Sk
+ []SL
+ 
+##### Copied from R 
+ [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
+ 
+ # The first i-1 rows have (i-1)*n elements
+ # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
+ #  Try the number of elements in the last m-i rows: (m-i)*n
+ [Skipping ]n lmli-ln*n [ elements]nAP
+ lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
+ 
+ # Row i has n elements
+ # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
+ [Copying ]n lnn [ elements]nAP
+ lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
+ 
+ # Restore the first (i-1)*n + n elements from stack A
+ #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
+ [Restoring ]n lmli1--ln*n [ elements]nAP
+ lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
+ 
+ # Restore the n elements that we copied into stack B
+ [Restoring ]n lnn [ copied elements]nAP
+ lnsk [LBls* lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBls*/
+##### 
+ 
+ 
+ 0LLZ*Li*Lk*Lm*Ln*Ls*K+k
+]sK
+
+# +: Row addition
+# u := s*u + p*v
+# u,v are rows; s,p are scalars
+# @return matrix, row
+# your matrix m n u s v p | TOS
+[
+ Sp  # scalar for second row
+ Sv  # index of second row
+ Ss  # scalar for first row
+ Su  # index of first row (row that will be replaced)
+ Sn  # columns
+ Sm  # rows
+ 0Sk
+ []SL
+ 
+ 
+ # Get s*u
+ lm ln lu ls lKx
+ # Store s*u on stack U
+ lnsk [SU lk1-dsk 0<L]sL lk0<L
+ # Get p*v
+ lm ln lv lp lKx
+ # Store p*v on stack V
+ lnsk [SV lk1-dsk 0<L]sL lk0<L
+ # Load each item from U and V and add them together
+ lnsk [LULV+ lk1-dsk 0<L]sL lk0<L
+
+# Removed: User will determine what to do with sum of rows, in keeping with style of "don't modify the matrix unless that's all it does"
+# # Write s*u + p*v over row u
+# lm ln lu lWx
+ 
+ 0LLZ*Lk*Lm*Ln*Lp*Ls*Lu*Lv*K+k
+]s+
+
+
+# P: Print matrix(m,n)
+# @return matrix | TOS
+[
+ Sn  # cols
+ Sm  # rows
+ 0Si
+ 0Sj
+ 0Sk
+ []SL
+ []Sl
+ 
+ # Push all m*n elements onto stack A
+ lmln*sk [SA lk1-dsk 0<L]sL lk0<L
+  
+ # For each row in matrix:
+ lmsi [
+        [
+		 # Copy and print first element of row i
+         LAdn
+		 # Copy and print the other n-1 elements in row i, preceded by tab spaces
+		 ln1-sj [9PLAdn lj1-dsj 0<l]sl lj0<l
+		 # Print trailing newline
+		 AP
+		]x
+		li1-dsi 0<L]sL li0<L
+ 
+ 0LLZ*LlZ*Li*Lj*Lk*Lm*Ln*K+k
+]sP
 
 # Tests
 1 2 3 4 5 6 7 8 9
 #5 3 1 lRxf
 
-3 3 1 3 lSxfAdPP
-3 3 2 3 lSxfAdPP
+#3 3 1 3 lSxfAdPP
+#3 3 2 3 lSxfAdPP
 
 0 0 0 3 3 2 lWxfAdPP
 386 3 3 2 2 lwxfAdPP
