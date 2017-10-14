@@ -226,6 +226,44 @@
  0LLZ*Lk*Lm*Ln*Lp*Ls*Lu*Lv*K+k
 ]s+
 
+# A: Add scalar multiples of two matrices
+# @return A B sA+pB | TOS
+# your first matrix your second matrix m n s p | TOS
+[
+ Sp
+ Ss
+ Sn
+ Sm
+ 0Sk
+ []SL
+ 
+ # Push all m*n elements of second matrix onto stack B
+ lmln*sk [SB lk1-dsk 0<L]sL lk0<L
+ # Push all m*n elements of first matrix onto stack A
+ lmln*sk [SA lk1-dsk 0<L]sL lk0<L
+ # For each element:
+ #   Copy each pair of elements from A and B
+ #   Add A(k)+B(k)
+ #   Push each result onto stack C
+ #   Load A(k) and B(k)
+ lmln*sk [lAls*lBlp*+SCLALB lk1-dsk 0<L]sL lk0<L
+ # Now we have C in reverse of the order we need it in,
+ # and A and B interleaved on the stack.
+ # Separate A and B
+ lmln*sk [SBSA lk1-dsk 0<L]sL lk0<L
+ # Load A
+ lmln*sk [LA lk1-dsk 0<L]sL lk0<L
+ # Load B
+ lmln*sk [LB lk1-dsk 0<L]sL lk0<L
+ # Reverse C into A
+ lmln*sk [LCSA lk1-dsk 0<L]sL lk0<L
+ # Load C from A
+ lmln*sk [LA lk1-dsk 0<L]sL lk0<L
+ 
+ 0LLZ*Lk*Lm*Ln*Lp*Ls*K+k
+]sA
+
+
 
 # P: Print matrix(m,n)
 # @return matrix | TOS
@@ -257,11 +295,14 @@
 ]sP
 
 # Tests
-1 2 3 4 5 6 7 8 9
+#1 2 3 4 5 6 7 8 9
 #5 3 1 lRxf
 
 #3 3 1 3 lSxfAdPP
 #3 3 2 3 lSxfAdPP
 
-0 0 0 3 3 2 lWxfAdPP
-386 3 3 2 2 lwxfAdPP
+#0 0 0 3 3 2 lWxfAdPP
+#386 3 3 2 2 lwxfAdPP
+
+0 1 2 3 4 5 6 7 8
+9 8 7 6 5 4 3 2 1
