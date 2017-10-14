@@ -192,6 +192,14 @@
  0LLZ*Li*Lk*Lm*Ln*Ls*K+k
 ]sc
 
+# C: Scalar matrix multiplication
+# @return matrix, c*matrix
+# your matrix m n scalar | TOS
+[
+ Ss
+ * 1 r 1 Ls lcx
+]sC
+
 # +: Row addition
 ## u := s*u + p*v
 # u,v are rows; s,p are scalars
