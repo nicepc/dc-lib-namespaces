@@ -136,6 +136,7 @@
  Su
  Sn
  Sm
+ 0Sk
  
  # Pull row u from matrix
  lm ln lu lRx
@@ -153,11 +154,53 @@
  0Lk*Lm*Ln*Lu*Lv*K+k
 ]sS
 
-# c: Multiply row i by scalar s
+# The following was removed because it was further generalized below.
+#####################################
+# # c: Multiply row i by scalar s
+# # @return matrix row | TOS
+# # your matrix m n i s | TOS
+# [
+ # Ss  # scalar
+ # Si  # row index
+ # Sn
+ # Sm
+ # 0Sk
+ # []SL
+ 
+# ##### Copied from R 
+# # [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
+ 
+ # # The first i-1 rows have (i-1)*n elements
+ # # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
+ # #  Try the number of elements in the last m-i rows: (m-i)*n
+# # [Skipping ]n lmli-ln*n [ elements]nAP
+ # lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
+ 
+ # # Row i has n elements
+ # # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
+# # [Copying ]n lnn [ elements]nAP
+ # lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
+ 
+ # # Restore the first (i-1)*n + n elements from stack A
+ # #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
+# # [Restoring ]n lmli1--ln*n [ elements]nAP
+ # lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
+ 
+ # # Restore the n elements that we copied into stack B
+# # [Restoring ]n lnn [ copied elements]nAP
+ # lnsk [LBls* lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBls*/
+# ##### 
+ 
+ 
+ # 0LLZ*Li*Lk*Lm*Ln*Ls*K+k
+# ]sc
+#####################################
+
+# c: Perform generic operation on row i
 # @return matrix row | TOS
-# your matrix m n i s | TOS
+# your matrix m n i [] | TOS
 [
- Ss  # scalar
+ SO  # operation
  Si  # row index
  Sn
  Sm
@@ -185,11 +228,11 @@
  
  # Restore the n elements that we copied into stack B
 # [Restoring ]n lnn [ copied elements]nAP
- lnsk [LBls* lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBls*/
+ lnsk [LBlOx lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBlOx/
 ##### 
  
  
- 0LLZ*Li*Lk*Lm*Ln*Ls*K+k
+ 0LLZ*LOZ*Li*Lk*Lm*Ln*K+k
 ]sc
 
 # C: Scalar matrix multiplication
@@ -197,7 +240,8 @@
 # your matrix m n scalar | TOS
 [
  Ss
- * 1 r 1 Ls lcx
+ * 1 r 1 [ls*] lcx
+ 0Ls*K+k
 ]sC
 
 # +: Row addition
@@ -209,7 +253,7 @@
  Sp  # scalar for second row
  Sv  # index of second row
  Ss  # scalar for first row
- Su  # index of first row (row that will be replaced)
+ Su  # index of first row (row that will be replaced) (not replaced any more)
  Sn  # columns
  Sm  # rows
  0Sk
@@ -217,11 +261,11 @@
  
  
  # Get s*u
- lm ln lu ls lKx
+ lm ln lu [ls*] lcx
  # Store s*u on stack U
  lnsk [SU lk1-dsk 0<L]sL lk0<L
  # Get p*v
- lm ln lv lp lKx
+ lm ln lv [lp*] lcx
  # Store p*v on stack V
  lnsk [SV lk1-dsk 0<L]sL lk0<L
  # Load each item from U and V and add them together
@@ -346,6 +390,78 @@
  0LLZ*Lk*Ln*Lt*K+k
 ]sI
 
+# r: Perform row reduction on a matrix
+# @return matrix
+# your matrix m n | TOS
+[
+ Sn
+ Sm
+ 0Si
+ 0Sk
+# [lmlnlklk1-lSxli1-si]SQ
+ [[ Skipping ]nAP LU lDx lDx3Q]SQ
+ [[ Swapping ]nAP LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q]SO
+ [
+ [      F called with i = ]n lin [, k = ]n lknAP
+    [R]n lin [ = ]n
+
+  lmlnlilklExSU
+  
+#  # Check whether k,k is 0. If it is, we can't perform division, so swap rows k and k-1 and try F again.
+#  [(]n lkn [,]n lkn [) == ]n lUnAP
+#   lU0=Q
+#  # Let's not actually do that just yet
+  
+  lmlnlklklEx dn [*R]n lin d0=O [ - (]n
+  lmr lnr lir
+  LU dn [)*R]n lkn 
+#  d0=O
+  AP AP
+  _1*
+  lkr
+  
+  l+x
+  lmlnlilWx
+  
+#  lm ln lPx AP
+# [      F exiting with i = ]n lin [, k = ]n lknAP
+ ]SF
+ []SI
+ []SK
+
+ [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
+ #lm ln lPx AP
+ 
+ lmsk [
+# [  k = ]n lkn [ loop running]nAP
+	   lmsi [
+#	         [    i = ]n lin [ loop running]nAP
+			 lilk!=F
+			 lm ln lPx AP
+			 li1-dsi 0<I
+			]sI li0<I
+	   
+	   lk1-dsk 0<K
+	  ]sK lk0<K
+ lmsk [
+	   lmlnlklklEx
+      
+	   [R]n lkn [ /= ]n dn AP AP
+
+	   Ss  # store denominator on `s' for use in `c'
+	   lm ln lk [ls/] lcx
+	   Ls lDx  # delete `s'
+	   lm ln lk lWx
+	   lm ln lPx AP
+	   
+	   lk1-dsk 0<K
+	  ]sK lk0<K
+ 
+ 0Li*Lk*Lm*Ln*K+k
+ 0LFZ*LIZ*LKZ*LOZ*LQZ*K+k
+]sr
+
+
 
 # P: Print matrix(m,n)
 # @return matrix | TOS
@@ -357,7 +473,9 @@
  0Sk
  []SL
  []Sl
- 
+ [2Q]SQ
+ [[ ]P]S 
+ [l x d0=Q d1!>Q l x]S0
  # Push all m*n elements onto stack A
  lmln*sk [SA lk1-dsk 0<L]sL lk0<L
   
@@ -365,15 +483,16 @@
  lmsi [
         [
 		 # Copy and print first element of row i
-         LAdn
-		 # Copy and print the other n-1 elements in row i, preceded by tab spaces
-		 ln1-sj [9PLAdn lj1-dsj 0<l]sl lj0<l
-		 # Print trailing newline
-		 AP
+         LAdd0!>0n
+		 # Copy and print the next n-2 elements in row i, preceded by tab spaces
+		 ln2-sj [9PLAdd0!>0n lj1-dsj 0<l]sl lj0<l
+		 # Print final element and trailing newline
+		 #   Use `p' to prevent the weird backslash-newline thing
+		 9PLAd0!>0p
 		]x
 		li1-dsi 0<L]sL li0<L
  
- 0LLZ*LlZ*Li*Lj*Lk*Lm*Ln*K+k
+ 0L Z*L0Z*LLZ*LQZ*LlZ*Li*Lj*Lk*Lm*Ln*K+k
 ]sP
 
 # Tests
@@ -389,33 +508,50 @@
 #0 1 2 3 4 5 6 7 8
 #9 8 7 6 5 4 3 2 1
 
-1 2 3 4 5 6 7 8 9 # 3,3 matrix
-[Matrix A(3,3):]nAP
-3 3 lPx AP
+# 1 2 3 4 5 6 7 8 9 # 3,3 matrix
+# [Matrix A(3,3):]nAP
+# 3 3 lPx AP
 
-#0 0 _1 0 _1 0 _1 0 0 # 3,3 matrix
-1 2 3 4 5 6 # 3,2 matrix
-[Matrix B(3,2):]nAP
-3 2 lPx AP
+# #0 0 _1 0 _1 0 _1 0 0 # 3,3 matrix
+# 1 2 3 4 5 6 # 3,2 matrix
+# [Matrix B(3,2):]nAP
+# 3 2 lPx AP
 
-# Result should be a 3,2 matrix:
-#   22  28
-#   49  64
-#   76  100
-[Matrix AB:]nAP
+# # Result should be a 3,2 matrix:
+# #   22  28
+# #   49  64
+# #   76  100
+# [Matrix AB:]nAP
 
-3 3 2 l*x
-3 2 lPx AP
+# 3 3 2 l*x
+# 3 2 lPx AP
 
-[Matrix C(3,3):]nAP
-# Reuse values
-3 3 lPx AP
-[Identity I(3)]nAP
-3 lIx
-3 3 lPx AP
-[Matrix CI:]nAP
-3 3 3 l*x
-3 3 lPx
-[Matrix IC:]nAP
-3 3 3 l*x
-3 3 lPx
+# [Matrix C(3,3):]nAP
+# # Reuse values
+# 3 3 lPx AP
+# [Identity I(3)]nAP
+# 3 lIx
+# 3 3 lPx AP
+# [Matrix CI:]nAP
+# 3 3 3 l*x
+# 3 3 lPx
+# [Matrix IC:]nAP
+# 3 3 3 l*x
+# 3 3 lPx
+
+# c
+
+3k
+
+1 4 5 8
+2 2 7 _8
+6.2 2 7 22
+
+[Original matrix:]nAP
+3 4 lPx AP
+
+[Performing row reduction...]nAP
+3 4 lrx
+[Row reduction complete:]nAP
+3 4 lPx AP
+q
