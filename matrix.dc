@@ -26,26 +26,26 @@
  0Sk
  []SL
  
- [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
+# [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
  
  # The first i-1 rows have (i-1)*n elements
  # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
  #  Try the number of elements in the last m-i rows: (m-i)*n
- [Skipping ]n lmli-ln*n [ elements]nAP
+# [Skipping ]n lmli-ln*n [ elements]nAP
  lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
  
  # Row i has n elements
  # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
- [Copying ]n lnn [ elements]nAP
+# [Copying ]n lnn [ elements]nAP
  lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
  
  # Restore the first (i-1)*n + n elements from stack A
  #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
- [Restoring ]n lmli1--ln*n [ elements]nAP
+# [Restoring ]n lmli1--ln*n [ elements]nAP
  lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
  
  # Restore the n elements that we copied into stack B
- [Restoring ]n lnn [ copied elements]nAP
+# [Restoring ]n lnn [ copied elements]nAP
  lnsk [LB lk1-dsk 0<L]sL lk0<L
  
  
@@ -165,26 +165,26 @@
  []SL
  
 ##### Copied from R 
- [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
+# [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
  
  # The first i-1 rows have (i-1)*n elements
  # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
  #  Try the number of elements in the last m-i rows: (m-i)*n
- [Skipping ]n lmli-ln*n [ elements]nAP
+# [Skipping ]n lmli-ln*n [ elements]nAP
  lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
  
  # Row i has n elements
  # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
- [Copying ]n lnn [ elements]nAP
+# [Copying ]n lnn [ elements]nAP
  lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
  
  # Restore the first (i-1)*n + n elements from stack A
  #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
- [Restoring ]n lmli1--ln*n [ elements]nAP
+# [Restoring ]n lmli1--ln*n [ elements]nAP
  lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
  
  # Restore the n elements that we copied into stack B
- [Restoring ]n lnn [ copied elements]nAP
+# [Restoring ]n lnn [ copied elements]nAP
  lnsk [LBls* lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBls*/
 ##### 
  
@@ -273,6 +273,59 @@
 
 
 
+# *: Matrix multiplication
+# @return matrixA, matrixB, matrixAB | TOS
+# first matrix second matrix m n p | TOS
+[
+ Sp  # width of B and C
+ Sn  # width of A and height of B
+ Sm  # height of A and C
+ 0Si
+ 0Sj
+ 0Sk
+ 0St
+ []SI
+ []SJ
+ []SK
+ []ST
+ []SO  # operation for loops
+ 
+ # Reusable loop code:
+ # []sO lx lFx
+ [st [lOx lt1-dst 0<T]sT lt0<T]SF
+ 
+ lnlp* [SB]sO lFx
+ lmln* [SA]sO lFx
+ 
+ # Multiplication algorithm
+ lmsi [
+       lpsk [
+	         0SC
+			 lnsj [
+			       lmln* [LA]sO lFx
+				   lmlnliljlExSC
+				   lmln* [SA]sO lFx
+				   lnlp* [LB]sO lFx
+				   lnlpljlklExSC
+				   lnlp* [SB]sO lFx
+				   LCLC*LC+SC
+				   lj1-dsj 0<J
+			      ]sJ lj0<J
+			 lk1-dsk 0<K
+	        ]sK lk0<K
+	   li1-dsi 0<I
+      ]sI li0<I
+ lmln* [LA]sO lFx
+ lnlp* [LB]sO lFx
+ lmlp* [LC]sO lFx
+ 
+ 0Li*Lj*Lk*Lm*Ln*Lp*Lt*K+k
+ 0LFZ*LIZ*LJZ*LKZ*LTZ*LOZ*K+k
+]s*
+
+
+
+
 # P: Print matrix(m,n)
 # @return matrix | TOS
 [
@@ -312,5 +365,23 @@
 #0 0 0 3 3 2 lWxfAdPP
 #386 3 3 2 2 lwxfAdPP
 
-0 1 2 3 4 5 6 7 8
-9 8 7 6 5 4 3 2 1
+#0 1 2 3 4 5 6 7 8
+#9 8 7 6 5 4 3 2 1
+
+1 2 3 4 5 6 7 8 9 # 3,3 matrix
+[Matrix A(3,3):]nAP
+3 3 lPx AP
+
+#0 0 _1 0 _1 0 _1 0 0 # 3,3 matrix
+1 2 3 4 5 6 # 3,2 matrix
+[Matrix B(3,2):]nAP
+3 2 lPx AP
+
+# Result should be a 3,2 matrix:
+#   22  28
+#   49  64
+#   76  100
+[Matrix AB:]nAP
+
+3 3 2 l*x
+3 2 lPx AP
