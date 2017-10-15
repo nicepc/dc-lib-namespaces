@@ -403,7 +403,7 @@
  [[ Swapping ]nAP LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q]SO
  [
  [      F called with i = ]n lin [, k = ]n lknAP
-    [R]n lin [ = ]n
+    [R]n lin [ = (]n
 
   lmlnlilklExSU
   
@@ -412,16 +412,19 @@
 #   lU0=Q
 #  # Let's not actually do that just yet
   
-  lmlnlklklEx dn [*R]n lin d0=O [ - (]n
-  lmr lnr lir
-  LU dn [)*R]n lkn 
+  lmlnlklklEx dSVn [*R]n lin d0=O [ - (]n
+  lm ln li lV
+  lUn [)*R]n lkn [)/]n lVn
 #  d0=O
   AP AP
   _1*
-  lkr
+  lk LU
   
   l+x
   lmlnlilWx
+  lmlnli[lV/]lcx
+  lmlnlilWx
+  LVlDx
   
 #  lm ln lPx AP
 # [      F exiting with i = ]n lin [, k = ]n lknAP
@@ -460,6 +463,70 @@
  0Li*Lk*Lm*Ln*K+k
  0LFZ*LIZ*LKZ*LOZ*LQZ*K+k
 ]sr
+
+# d: Calculate the determinant
+# @return matrix, determinant | TOS
+# your matrix n | TOS
+[
+ dSn
+ Sm
+ 0Si
+ 0Sk
+# [lmlnlklk1-lSxli1-si]SQ
+ [[ Skipping ]nAP LU lDx lDx3Q]SQ
+ [[ Swapping ]nAP LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q]SO
+ [
+ [      F called with i = ]n lin [, k = ]n lknAP
+    [R]n lin [ = (]n
+
+  lmlnlilklExSU
+  
+#  # Check whether k,k is 0. If it is, we can't perform division, so swap rows k and k-1 and try F again.
+#  [(]n lkn [,]n lkn [) == ]n lUnAP
+#   lU0=Q
+#  # Let's not actually do that just yet
+  
+  lmlnlklklEx dSVn [*R]n lin d0=O [ - (]n
+  lm ln li lV
+  lUn [)*R]n lkn [)/]n lVn
+#  d0=O
+  AP AP
+  _1*
+  lk LU
+  
+  l+x
+  lmlnlilWx
+  lmlnli[lV/]lcx
+  lmlnlilWx
+  LVlDx
+  
+#  lm ln lPx AP
+# [      F exiting with i = ]n lin [, k = ]n lknAP
+ ]SF
+ []SI
+ []SK
+
+ [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
+ #lm ln lPx AP
+ 
+ lmsk [
+# [  k = ]n lkn [ loop running]nAP
+	   lmsi [
+#	         [    i = ]n lin [ loop running]nAP
+			 lilk!=F
+			 lm ln lPx AP
+			 li1-dsi 0<I
+			]sI li0<I
+	   
+	   lk1-dsk 0<K
+	  ]sK lk0<K
+ [1+]S0
+ lmln*sk [d0=0 SU lk1-dsk 0<K]sK lk0<K
+ lmln*sk 1[LU* lk1-dsk 0<K]sK lk0<K
+ 
+ 0Li*Lk*Lm*Ln*K+k
+ 0L0Z*LFZ*LIZ*LKZ*LOZ*LQZ*K+k
+]sd
 
 
 
@@ -544,14 +611,17 @@
 3k
 
 1 4 5 8
-2 2 7 _8
-6.2 2 7 22
+2 6 7 _8
+6.2 2 8 1 # 22
 
 [Original matrix:]nAP
-3 4 lPx AP
-
-[Performing row reduction...]nAP
-3 4 lrx
-[Row reduction complete:]nAP
-3 4 lPx AP
-q
+#3 4 lPx AP
+3 3 lPx AP
+#[Performing row reduction...]nAP
+#3 4 lrx
+#[Row reduction complete:]nAP
+#3 4 lPx AP
+[Calculating determinant...]nAP
+3 ldx
+[Determinant is:]nAP
+p
