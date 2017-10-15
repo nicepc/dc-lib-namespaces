@@ -1,0 +1,38 @@
+[
+    [N:=]npSN
+    [K:=]nKpSK
+    [M:=10^(K+1)=10^]n10lK1+dn^[=]npSM
+    [X:=]nlM2/pSX
+    [D:=]n0pSD
+    [Y:=]n1pSY
+    [[:    D:=M/(2^Y)=]nlMdn[/(2^]n2lYdn[)=]n^lMn[/]ndn[=]n/psD]SO
+    [[[:    D:=]nlK_1*10r^psD]sO]Sd
+    [
+        lXn[!=]nlNnAP
+        lYn[:    X:=X+D=]n
+        lXdn[+]nlDdn+[=]npsX2Q
+    ]s+
+    [
+        lY1+sY
+        lYnlOx
+        lD0=d
+        [
+            lXlN>+
+            lYn[:    X:=X-D=]n
+            lXdn[-]nlDdn-[=]npsX
+        ]x
+#        lXlN-2^v10lK1+_1*^!<L
+        lXlN!=L
+    ]SL lXlN!=L
+#    0LN*LK*LM*LD*LY*L+Z*LLZ*K+k
+    lX
+]s_
+
+
+# This code is useless on its own—its job is to take the top of the stack and calculate it by adding or subtracting successively
+#  smaller portions of the interval [0,10^K], where K is the precision value. My hope is that it will help me in writing the rational
+#  power and logarithm functions, although at the moment I can't recall why I took this approach.
+
+# I remember why I took this approach. The goal is not to approximate the input; the goal is to approximate the output such that a
+#  function of the output is close to a known value. For example, to calculate the 5th root of 7, we'd change our working value until
+#  the fifth power of that value is sufficiently close to 7. It shouldn't be "output == input"; it should be "f^-1(output) == input".

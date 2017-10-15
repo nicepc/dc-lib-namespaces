@@ -1,0 +1,54 @@
+[
+
+# take arguments from stack
+
+SbdSaSA
+
+# initialize and declare some functions
+[]SI
+[]SL
+[]SM
+[]SN
+[]ST
+0SK
+
+[v]SO
+[lb^]SF
+
+# execute a=O(a) until F(a)<A
+# id est, a=sqrt(a) until a^b<A
+[Reducing ]n lan [ until ]n lan [^]n lbn [<]n lAn AP
+[lalOxdsalFxlA<L]sL lalFxlA<L
+[Reduction complete: a==]n lan AP
+
+# redefine O() to increment by 10^(-K)
+[
+[Incrementing ]n lan [+=]n
+10lK_1*^ dn AP
++]sO
+
+# define M(a), which we will run later
+# increment a by 1/(10^K) until F(a)>A, then decrement so that F(a)<=A
+[[lalOxdsalFxlA>L]sL lalFxlA>L
+ [Reached ]n lan [^]n lbn [ = ]n lalb^n [ >= ]n lAnAP
+ [[[Too large: ]n lalb^n [>]n lAn AP la10lK_1*^[Decrementing ]nlan[-=]ndnAP-sa]sT]sI
+  [[====Equality! Quitting early...====]nAP 3Q]sT lalb^lA!=I lTx
+]sM
+
+# execute M() until K==scale
+# id est, repeat for every decimal place
+[
+[Call to N]nAP
+ lMx lK1+sK lK1-K>N]sN
+   lNx
+# catch the case where the value is one fractional unit less than the correct result
+# if this is the case, then incrementing will yield an exact answer
+lK1-sK [[sa]sT]sI [[No, that's too large]nAP 0*K+k]sT [Test Round: ]n lalOxdlb^lA=I lTx
+
+# clean up our mess
+0LFZ*LIZ*LLZ*LMZ*LNZ*LOZ*LTZ*LA*Lb*LK*K+k
+
+# push our return value
+La
+
+]sV

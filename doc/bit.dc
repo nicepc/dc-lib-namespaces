@@ -1,10 +1,8 @@
 ##  Author:     Joseph Reed
-##  Timestamp:  2016-09-18 02:08-08:00
-##  Contact:    josephreed2600@gmail.com
 ##  File:       bit.dc
-##  Version:    1.1
+##  Version:    1.2
 ##  Topic:      Bitwise operations for `dc`
-##  Changes:    Removed commented code
+##  Changes:    Changed NOT from `!' to `~', so `!' can be used by factorial.dc
 ##
 ##  In this file:
 ##
@@ -14,7 +12,7 @@
 ##    |    Bitwise OR     2        1
 ##    ^    Bitwise XOR    2        1
 ##    \    Bitwise NOT    1        1        This function flips the bits of the top number
-##    !    Bitwise NOT    2        1        This function flips the bits of the top two numbers, using the longer number's length in bits
+##    ~    Bitwise NOT    2        1        This function flips the bits of the top two numbers, using the longer number's length in bits
 ## ----------------------------------------
 ##    ?    Error message  0        0        This function displays a message indicating that there are not enough values on the stack
 ##    #    Array to int   A[]      1        This function converts the boolean array A[] to a number and pushes that number on the stack
@@ -122,4 +120,4 @@
  ]dSLx
  LLZLZLaLb+++0*K+k              # destroy temporary a, b, L, Z              Z(0),a(0),b(0)->
  l#x                            #                                           A[]->(0)
-]s!                             # !: bitwise NOT (2 args)
+]s~                             # ~: bitwise NOT (2 args)

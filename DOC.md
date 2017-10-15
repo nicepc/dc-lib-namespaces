@@ -10,7 +10,7 @@ This section lists the operators. These are persistent macros intended to be cal
 |\|        | Bitwise OR     |    2    |    1    |
 | ^        | Bitwise XOR    |    2    |    1    |
 | \        | Bitwise NOT    |    1    |    1    | This function flips the bits of the top number
-| !        | Bitwise NOT    |    2    |    1    | This function flips the bits of the top two numbers, using the longer number's length in bits
+| ~        | Bitwise NOT    |    2    |    1    | This function flips the bits of the top two numbers, using the longer number's length in bits
 
 #### Helper Functions
 This section lists the helper functions. These are persistent macros intended to be called by the operators and each other.
@@ -39,5 +39,3 @@ This section lists the temporary registers. These registers hold transient value
 
 <hr />
 <br>Author:     Joseph Reed
-<br>Timestamp:  2016-09-18 02:08-08:00
-<br>Contact:    josephreed2600@gmail.com
