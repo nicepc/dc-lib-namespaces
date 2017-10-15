@@ -323,7 +323,28 @@
  0LFZ*LIZ*LJZ*LKZ*LTZ*LOZ*K+k
 ]s*
 
-
+# I: Generate an identity matrix
+# @return matrix | TOS
+# n | TOS
+[
+ Sn
+ 0Sk
+ 0St
+ []SL
+ []Sl
+ 
+ 1
+ # The rest of the matrix is n-1 repetitions of n zeros followed by a 1
+ ln1-sk [
+         lnst [
+			   0 lt1-dst 0<l
+	          ]sl lt0<l
+	     1
+		 lk1-dsk 0<L
+        ]sL lk0<L
+ 
+ 0LLZ*Lk*Ln*Lt*K+k
+]sI
 
 
 # P: Print matrix(m,n)
@@ -385,3 +406,16 @@
 
 3 3 2 l*x
 3 2 lPx AP
+
+[Matrix C(3,3):]nAP
+# Reuse values
+3 3 lPx AP
+[Identity I(3)]nAP
+3 lIx
+3 3 lPx AP
+[Matrix CI:]nAP
+3 3 3 l*x
+3 3 lPx
+[Matrix IC:]nAP
+3 3 3 l*x
+3 3 lPx
