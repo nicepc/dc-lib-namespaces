@@ -394,16 +394,20 @@
 # @return matrix
 # your matrix m n | TOS
 [
+ KdSZ2*k
  Sn
  Sm
  0Si
  0Sk
 # [lmlnlklk1-lSxli1-si]SQ
  [[ Skipping ]nAP LU lDx lDx3Q]SQ
- [[ Swapping ]nAP LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q]SO
  [
- [      F called with i = ]n lin [, k = ]n lknAP
-    [R]n lin [ = (]n
+#  [ Swapping ]nAP
+  LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q
+ ]SO
+ [
+# [      F called with i = ]n lin [, k = ]n lknAP
+#    [R]n lin [ = (]n
 
   lmlnlilklExSU
   
@@ -412,11 +416,14 @@
 #   lU0=Q
 #  # Let's not actually do that just yet
   
-  lmlnlklklEx dSVn [*R]n lin d0=O [ - (]n
+  lmlnlklklEx SV
+#    lVn [*R]n lin
+  d0=O
+#    [ - (]n
   lm ln li lV
-  lUn [)*R]n lkn [)/]n lVn
+#    lUn [)*R]n lkn [)/]n lVn
 #  d0=O
-  AP AP
+#  AP AP
   _1*
   lk LU
   
@@ -432,7 +439,7 @@
  []SI
  []SK
 
- [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
+# [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
  #lm ln lPx AP
  
  lmsk [
@@ -440,22 +447,23 @@
 	   lmsi [
 #	         [    i = ]n lin [ loop running]nAP
 			 lilk!=F
-			 lm ln lPx AP
+#			 lm ln lPx AP
 			 li1-dsi 0<I
 			]sI li0<I
 	   
 	   lk1-dsk 0<K
 	  ]sK lk0<K
+ LZk
  lmsk [
 	   lmlnlklklEx
       
-	   [R]n lkn [ /= ]n dn AP AP
+#	   [R]n lkn [ /= ]n dn AP AP
 
 	   Ss  # store denominator on `s' for use in `c'
 	   lm ln lk [ls/] lcx
 	   Ls lDx  # delete `s'
 	   lm ln lk lWx
-	   lm ln lPx AP
+#	   lm ln lPx AP
 	   
 	   lk1-dsk 0<K
 	  ]sK lk0<K
@@ -615,13 +623,14 @@
 6.2 2 8 1 # 22
 
 [Original matrix:]nAP
-#3 4 lPx AP
-3 3 lPx AP
-#[Performing row reduction...]nAP
-#3 4 lrx
-#[Row reduction complete:]nAP
-#3 4 lPx AP
-[Calculating determinant...]nAP
-3 ldx
-[Determinant is:]nAP
-p
+3 4 lPx AP
+#3 3 lPx AP
+[Performing row reduction...]nAP
+3 4 lrx
+[Row reduction complete:]nAP
+3 4 lPx AP
+
+#[Calculating determinant...]nAP
+#3 ldx
+#[Determinant is:]nAP
+#p
