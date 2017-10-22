@@ -1,9 +1,10 @@
-[
-ddSnSn-dSmSm
-[ln1-dsn0<LSA]SL ln0<L
-[lm1-dsm0<LSB]sL lm0<L
-0Lm*Ln*K+k  
-[ln1-dsn0<LLA]sL ln0<L
-[lm1-dsm0<LLB]sL lm0<L
-0Lm*Ln*LLZ*K+k
-]sR
+[                        # Here's the game plan: Move n items from the top of the stack down m items
+ddSnSn-dSmSm             # Store two copies of n and two copies of m: ToS is number of times to `rotate'; next is number of items to `rotate'
+                         # Hey, ``items'' and ``times'' are anagrams!
+[ln1-dsn0<LSA]SL ln0<L   # Move n items from the stack to A
+[lm1-dsm0<LSB]sL lm0<L   # Move m items from the stack to B
+LmLn+0*K+k               # Trash the empty counters
+[ln1-dsn0<LLA]sL ln0<L   # Move n items from A to stack
+[lm1-dsm0<LLB]sL lm0<L   # Move m items from B to stack
+LmLnLLZ++0*K+k           # Trash empty counters and loop macro
+]sR                      # `R' is for Rotate

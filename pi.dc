@@ -1,18 +1,36 @@
+# pi.dc
+# Implements the Chudnovsky algorithm to calculate pi
+# https://en.wikipedia.org/wiki/Chudnovsky_algorithm
+# 
+#   pi = C / Sum[k=0..infinity] {M_k * L_k / X_k}
+# 
+#   C := 426880*sqrt(10005)
+#   M_{k+1} := M_k(12k+2)(12k+6)(12k+10)/(k+1)^3;	M_0 := 1
+#   L_{k+1} := L_k + 545140134;				L_0 := 13591409
+#   X_{k+1} := X_k * -262537412640768000;		X_0 := 1
+#
+#   T_k := M_k * L_k / X_k
+#   S_k := Sum[n=0..k] {T_n}
+#   P := C / S_k where k is determined from current precision value
+#
+# Algorithm appears to produce 14 additional decimal digits of accuracy per iteration
+
 [
-[lk;M lk12*2+* lk12*6+* lk12*10+* lk1+3^/ lk1+:M]SM
-[lk;L 545140134+ lk1+:L]SL
-[lk;X _262537412640768000* lk1+:X]SX
-[10005v426880*]SC
-0Sk
+ [lk;M lk12*2+* lk12*6+* lk12*10+* lk1+3^/ lk1+:M]SM
+ [lk;L 545140134+ lk1+:L]SL
+ [lk;X _262537412640768000* lk1+:X]SX
+ [10005v426880*]SC
+ 0Sk
 
-1 0:M
-13591409 0:L
-1 0:X
+ 1 0:M
+ 13591409 0:L
+ 1 0:X
 
-[
- lk;M lk;L* lk;X/ lk:T
- [lMx lLx lXx lk;M lk;L* lk;X/ lk:T lk1+sk]dsTx
-]ST
-[lkSa 0[lad;Tr1-drsa0!>E+]SE la0!>E 0LEZ*La*K+k]SS
+ [
+  lk;M lk;L* lk;X/ lk:T
+  [lMx lLx lXx lk;M lk;L* lk;X/ lk:T lk1+sk]dsTx
+ ]ST
+ [lkSa 0[lad;Tr1-drsa0!>E+]SE la0!>E 0LEZ*La*K+k]SS
 
-KdSK0k12/1+LKkSn [ln1-dsn 0<J lTx]dSJx lCx lSx / 0LCZ*LJZ*LLZ*LMZ*LSZ*LTZ*LXZ*Lk*Ln*K+k]sP
+ KdSK0k12/1+LKkSn [ln1-dsn 0<J lTx]dSJx lCx lSx /  0LCZ*LJZ*LLZ*LMZ*LSZ*LTZ*LXZ*Lk*Ln*K+k
+]sP

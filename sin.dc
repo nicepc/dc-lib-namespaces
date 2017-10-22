@@ -1,1 +1,15 @@
-[0Sk[KdSK3+klPx2*0k%LKk1/]Sm[_1lk^lxlk2*1+^*lk2*1+l!x/lk1+sk]STKSKKSnK2*klmxSx0[lTxd0!=L+]dSLxlKk1/0LmZ*LLZ*LTZ*Lk*Ln*Lx*LK*K+k]sS
+#include factorial.dc
+#include pi.dc
+[
+ 0Sk
+ [KdSK3+klPx2*0k%LKk1/]Sm # mod 2pi
+ [_1lk^ lxlk2*1+^* lk2*1+l!x / lk1+sk]ST
+ KSK
+ KSn
+ K2*k
+ lmx Sx
+ 0[lTxd0!=L+]dSLx # calculate terms until next term is 0 (i.e., less than precision)
+ lKk 1/
+ 0LmZ*LLZ*LTZ*Lk*Ln*Lx*LK*K+k
+]sS
+
