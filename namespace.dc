@@ -1,0 +1,10 @@
+# Each namespace name must have a unique length
+[Z;nx]sn # prepare name `n' for namespacing
+
+# New method of assigning macros:
+# [macro contents] [name]Z :F
+# basically assigns the macro to name::F
+[[namespace::n]P] [namespace]Z :n
+[
+ [foo::n]P
+] [foo]Z:n
