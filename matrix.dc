@@ -1,3 +1,47 @@
+# Namespaces:
+#  2 dc
+#  3 row
+#  6 matrix
+# Functions:
+#  (dc)D: General delete function, removes TOS silently
+#  (matrix)P: Print matrix(m,n)
+#  (matrix)E: Fetch element i,j from matrix(m,n)
+#  (matrix)W: Write one value to row i, column j
+#  (matrix)I: Generate an identity matrix
+#  (matrix)C: Scalar matrix multiplication
+#  (matrix)R: Perform row reduction on a matrix
+#  (matrix)D: Calculate the determinant
+#  (matrix)+: Add scalar multiples of two matrices
+#  (matrix)*: Matrix multiplication
+#  (row)R: Extract a row i from a matrix
+#  (row)W: Write n values to row i of matrix(m,n)
+#  (row)S: Swap rows u and v in matrix(m,n)
+#  (row)O: Perform generic operation on row i
+#  (row)+: Row addition
+# Replace one name with another, like O->Y:
+#   ([=<>LSls])O(x?)
+#   \1Y\2
+# Or A->(matrix)+:
+#   sA
+#   [matrix]Z:+
+# s/([Ll])cx)/[row]\1Ox/
+# s/([Ss])c/[row]Z:O/
+#
+# Namespace prep:
+#   s/(.)/[Z;\1x]s\1/
+[Z;Cx]sC
+[Z;Dx]sD
+[Z;Ex]sE
+[Z;Ix]sI
+[Z;Ox]sO
+[Z;Px]sP
+[Z;Rx]sR
+[Z;Sx]sS
+[Z;Wx]sW
+[Z;+x]s+
+[Z;*x]s*
+
+
 
 # 1 2 3 4 5 6 7 8 9 2 4 6 9 6 3 
 # 5 3
@@ -9,14 +53,14 @@
 # 9 6 3
 
 
-[Z0*K+k]sD # D: General delete function, removes TOS silently
+[Z0*K+k][dc]Z:D # (dc)D: General delete function, removes TOS silently
 
 # 5sk [lXx lk1-dsk 0<L]sL lk0<L # execute X for k=5..1 if k=5
 # 5sk [lXx lkd1-sk 0<L]sL lk0<L # execute X for k=5..0 if k=5
 # 5sk [lXx lkd1-sk 0<L]dsLx     # execute X for k=5..1 or for k=0
 # 5sk [lXx lk1-dsk 0<L]dsLx     # execute X for k=5..1 or for k=0
 
-# R: Extract a row i from a matrix
+# (row)R: Extract a row i from a matrix
 # @return matrix row | TOS
 # matrix elements entered in reading order numRows numCols | TOS
 [
@@ -50,9 +94,9 @@
  
  
  0LLZ*Li*Lk*Lm*Ln*K+k
-]sR
+] [row]Z:R
 
-# E: Fetch element i,j from matrix(m,n)
+# (matrix)E: Fetch element i,j from matrix(m,n)
 # @return matrix, element
 [
  Sj  # Tgt col j
@@ -62,17 +106,17 @@
  0Sk
  []SL
  
- lm ln li lRx # get the ith row of matrix(m,n)
- ln  1 lj lRx # get the jth row of matrix(n,1), which is row n transposed
+ lm ln li [row]lRx # get the ith row of matrix(m,n)
+ ln  1 lj [row]lRx # get the jth row of matrix(n,1), which is row n transposed
  Se  # Store element as e temporarily
  # We now have n garbage values to destroy
- lnsk [lDx lk1-dsk 0<L]sL lk0<L # so let's delete them
+ lnsk [[dc]lDx lk1-dsk 0<L]sL lk0<L # so let's delete them
  Le  # Restore element
  
  0LLZ*Li*Lj*Lk*Lm*Ln*K+k
-]sE
+][matrix]Z:E
 
-# w: Write one value to row i, column j
+# (matrix)W: Write one value to row i, column j
 # @return matrix
 #  n*(m-i)+(n-j)
 #  nm-ni+n-j
@@ -91,16 +135,16 @@
  # Move the last n*(m-i)+(n-j) elements into stack A
  lmli-1+ln*lj-sk [SA lk1-dsk 0<L]sL lk0<L
  # Delete existing element
- lDx
+ [dc]lDx
  # Insert new element
  Lv
  # Restore last bunch of elements from stack A
  lmli-1+ln*lj-sk [LA lk1-dsk 0<L]sL lk0<L
  
  0LLZ*Lk*Li*Lj*Lm*Ln*K+k
-]sw
+] [matrix]Z:W
 
-# W: Write n values to row i of matrix(m,n)
+# (row)W: Write n values to row i of matrix(m,n)
 # @return matrix
 # matrix values your new row here m n i | TOS
 [
@@ -117,7 +161,7 @@
  lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
  
  # Delete last n elements, which comprise the existing row i
- lnsk [lDx lk1-dsk 0<L]sL lk0<L
+ lnsk [[dc]lDx lk1-dsk 0<L]sL lk0<L
  
  # Copy in the n elements from stack N
  lnsk [LI lk1-dsk 0<L]sL lk0<L
@@ -127,9 +171,9 @@
  
  
  0LLZ*Li*Lk*Lm*Ln*K+k
-]sW
+] [row]Z:W
 
-# S: Swap rows u and v in matrix(m,n)
+# (row)S: Swap rows u and v in matrix(m,n)
 # @return matrix
 [
  Sv
@@ -139,68 +183,26 @@
  0Sk
  
  # Pull row u from matrix
- lm ln lu lRx
+ lm ln lu [row]lRx
  # Store u's n elements on stack U
  lnsk [SU lk1-dsk 0<L]sL lk0<L
  # Pull row v from matrix
- lm ln lv lRx
+ lm ln lv [row]lRx
  # Write row v over row u
- lm ln lu lWx
+ lm ln lu [row]lWx
  # Load u's n elements from stack U
  lnsk [LU lk1-dsk 0<L]sL lk0<L
  # Write row u over row v
- lm ln lv lWx
+ lm ln lv [row]lWx
  
  0Lk*Lm*Ln*Lu*Lv*K+k
-]sS
+] [row]Z:S
 
-# The following was removed because it was further generalized below.
-#####################################
-# # c: Multiply row i by scalar s
-# # @return matrix row | TOS
-# # your matrix m n i s | TOS
-# [
- # Ss  # scalar
- # Si  # row index
- # Sn
- # Sm
- # 0Sk
- # []SL
- 
-# ##### Copied from R 
-# # [Fetching row ]n lin [ from a matrix with ]n lmn [ rows and ]n lnn [ columns]nAP
- 
- # # The first i-1 rows have (i-1)*n elements
- # # Therefore, skip the first (i-1)*n elements by pushing them onto a named stack A
- # #  Try the number of elements in the last m-i rows: (m-i)*n
-# # [Skipping ]n lmli-ln*n [ elements]nAP
- # lmli-ln*sk [SA lk1-dsk 0<L]sL lk0<L
- 
- # # Row i has n elements
- # # Therefore, copy the next n elements by pushing them onto a named stack B along with a stack named A
-# # [Copying ]n lnn [ elements]nAP
- # lnsk [dSBSA lk1-dsk 0<L]sL lk0<L
- 
- # # Restore the first (i-1)*n + n elements from stack A
- # #  Try using last elements again: (m-i)*n + n = (m-i+1)*n
-# # [Restoring ]n lmli1--ln*n [ elements]nAP
- # lmli1--ln*sk [LA lk1-dsk 0<L]sL lk0<L
- 
- # # Restore the n elements that we copied into stack B
-# # [Restoring ]n lnn [ copied elements]nAP
- # lnsk [LBls* lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBls*/
-# ##### 
- 
- 
- # 0LLZ*Li*Lk*Lm*Ln*Ls*K+k
-# ]sc
-#####################################
-
-# c: Perform generic operation on row i
+# (row)O: Perform generic operation on row i
 # @return matrix row | TOS
 # your matrix m n i [] | TOS
 [
- SO  # operation
+ SY  # operation
  Si  # row index
  Sn
  Sm
@@ -228,23 +230,23 @@
  
  # Restore the n elements that we copied into stack B
 # [Restoring ]n lnn [ copied elements]nAP
- lnsk [LBlOx lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBlOx/
+ lnsk [LBlYx lk1-dsk 0<L]sL lk0<L    # This is the only change from R: s/LB/LBlYx/
 ##### 
  
  
- 0LLZ*LOZ*Li*Lk*Lm*Ln*K+k
-]sc
+ 0LLZ*LYZ*Li*Lk*Lm*Ln*K+k
+] [row]Z:O
 
 # C: Scalar matrix multiplication
 # @return matrix, c*matrix
 # your matrix m n scalar | TOS
 [
  Ss
- * 1 r 1 [ls*] lcx
+ * 1 r 1 [ls*] [row]lOx
  0Ls*K+k
-]sC
+] [matrix]Z:C
 
-# +: Row addition
+# (row)+: Row addition
 ## u := s*u + p*v
 # u,v are rows; s,p are scalars
 # @return matrix, row
@@ -261,11 +263,11 @@
  
  
  # Get s*u
- lm ln lu [ls*] lcx
+ lm ln lu [ls*] [row]lOx
  # Store s*u on stack U
  lnsk [SU lk1-dsk 0<L]sL lk0<L
  # Get p*v
- lm ln lv [lp*] lcx
+ lm ln lv [lp*] [row]lOx
  # Store p*v on stack V
  lnsk [SV lk1-dsk 0<L]sL lk0<L
  # Load each item from U and V and add them together
@@ -273,12 +275,12 @@
 
 # Removed: User will determine what to do with sum of rows, in keeping with style of "don't modify the matrix unless that's all it does"
 # # Write s*u + p*v over row u
-# lm ln lu lWx
+# lm ln lu [row]lWx
  
  0LLZ*Lk*Lm*Ln*Lp*Ls*Lu*Lv*K+k
-]s+
+] [row]Z:+
 
-# A: Add scalar multiples of two matrices
+# (matrix)+: Add scalar multiples of two matrices
 # @return A B sA+pB | TOS
 # your first matrix your second matrix m n s p | TOS
 [
@@ -313,11 +315,11 @@
  lmln*sk [LA lk1-dsk 0<L]sL lk0<L
  
  0LLZ*Lk*Lm*Ln*Lp*Ls*K+k
-]sA
+] [matrix]Z:+
 
 
 
-# *: Matrix multiplication
+# (matrix)*: Matrix multiplication
 # @return matrixA, matrixB, matrixAB | TOS
 # first matrix second matrix m n p | TOS
 [
@@ -332,26 +334,26 @@
  []SJ
  []SK
  []ST
- []SO  # operation for loops
+ []SY  # operation for loops
  
  # Reusable loop code:
- # []sO lx lFx
- [st [lOx lt1-dst 0<T]sT lt0<T]SF
+ # []sY lx lFx
+ [st [lYx lt1-dst 0<T]sT lt0<T]SF
  
- lnlp* [SB]sO lFx
- lmln* [SA]sO lFx
+ lnlp* [SB]sY lFx
+ lmln* [SA]sY lFx
  
  # Multiplication algorithm
  lmsi [
        lpsk [
 	         0SC
 			 lnsj [
-			       lmln* [LA]sO lFx
-				   lmlnliljlExSC
-				   lmln* [SA]sO lFx
-				   lnlp* [LB]sO lFx
-				   lnlpljlklExSC
-				   lnlp* [SB]sO lFx
+			       lmln* [LA]sY lFx
+				   lmlnlilj[matrix]lExSC
+				   lmln* [SA]sY lFx
+				   lnlp* [LB]sY lFx
+				   lnlpljlk[matrix]lExSC
+				   lnlp* [SB]sY lFx
 				   LCLC*LC+SC
 				   lj1-dsj 0<J
 			      ]sJ lj0<J
@@ -359,13 +361,13 @@
 	        ]sK lk0<K
 	   li1-dsi 0<I
       ]sI li0<I
- lmln* [LA]sO lFx
- lnlp* [LB]sO lFx
- lmlp* [LC]sO lFx
+ lmln* [LA]sY lFx
+ lnlp* [LB]sY lFx
+ lmlp* [LC]sY lFx
  
  0Li*Lj*Lk*Lm*Ln*Lp*Lt*K+k
- 0LFZ*LIZ*LJZ*LKZ*LTZ*LOZ*K+k
-]s*
+ 0LFZ*LIZ*LJZ*LKZ*LTZ*LYZ*K+k
+] [matrix]Z:*
 
 # I: Generate an identity matrix
 # @return matrix | TOS
@@ -388,9 +390,9 @@
         ]sL lk0<L
  
  0LLZ*Lk*Ln*Lt*K+k
-]sI
+] [matrix]Z:I
 
-# r: Perform row reduction on a matrix
+# (matrix)R: Perform row reduction on a matrix
 # @return matrix
 # your matrix m n | TOS
 [
@@ -399,55 +401,55 @@
  Sm
  0Si
  0Sk
-# [lmlnlklk1-lSxli1-si]SQ
- [[ Skipping ]nAP LU lDx lDx3Q]SQ
+# [lmlnlklk1-[row]lSxli1-si]SQ
+ [[ Skipping ]nAP LU [dc]lDx [dc]lDx3Q]SQ
  [
 #  [ Swapping ]nAP
-  LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q
- ]SO
+  LU [dc]lDx [dc]lDx lmlnlkd1-[row]lSx lk1+sk 2Q
+ ]SY
  [
 # [      F called with i = ]n lin [, k = ]n lknAP
 #    [R]n lin [ = (]n
 
-  lmlnlilklExSU
+  lmlnlilk[matrix]lExSU
   
 #  # Check whether k,k is 0. If it is, we can't perform division, so swap rows k and k-1 and try F again.
 #  [(]n lkn [,]n lkn [) == ]n lUnAP
 #   lU0=Q
 #  # Let's not actually do that just yet
   
-  lmlnlklklEx SV
+  lmlnlklk[matrix]lEx SV
 #    lVn [*R]n lin
-  d0=O
+  d0=Y
 #    [ - (]n
   lm ln li lV
 #    lUn [)*R]n lkn [)/]n lVn
-#  d0=O
+#  d0=Y
 #  AP AP
   _1*
   lk LU
   
-  l+x
-  lmlnlilWx
-  lmlnli[lV/]lcx
-  lmlnlilWx
-  LVlDx
+  [row]l+x
+  lmlnli[row]lWx
+  lmlnli[lV/][row]lOx
+  lmlnli[row]lWx
+  LV[dc]lDx
   
-#  lm ln lPx AP
+#  lm ln [matrix]lPx AP
 # [      F exiting with i = ]n lin [, k = ]n lknAP
  ]SF
  []SI
  []SK
 
 # [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
- #lm ln lPx AP
+ #lm ln [matrix]lPx AP
  
  lmsk [
 # [  k = ]n lkn [ loop running]nAP
 	   lmsi [
 #	         [    i = ]n lin [ loop running]nAP
 			 lilk!=F
-#			 lm ln lPx AP
+#			 lm ln [matrix]lPx AP
 			 li1-dsi 0<I
 			]sI li0<I
 	   
@@ -455,24 +457,24 @@
 	  ]sK lk0<K
  LZk
  lmsk [
-	   lmlnlklklEx
+	   lmlnlklk[matrix]lEx
       
 #	   [R]n lkn [ /= ]n dn AP AP
 
 	   Ss  # store denominator on `s' for use in `c'
-	   lm ln lk [ls/] lcx
-	   Ls lDx  # delete `s'
-	   lm ln lk lWx
-#	   lm ln lPx AP
+	   lm ln lk [ls/] [row]lOx
+	   Ls [dc]lDx  # delete `s'
+	   lm ln lk [row]lWx
+#	   lm ln [matrix]lPx AP
 	   
 	   lk1-dsk 0<K
 	  ]sK lk0<K
  
  0Li*Lk*Lm*Ln*K+k
- 0LFZ*LIZ*LKZ*LOZ*LQZ*K+k
-]sr
+ 0LFZ*LIZ*LKZ*LYZ*LQZ*K+k
+] [matrix]Z:R
 
-# d: Calculate the determinant
+# (matrix)D: Calculate the determinant
 # @return matrix, determinant | TOS
 # your matrix n | TOS
 [
@@ -480,49 +482,49 @@
  Sm
  0Si
  0Sk
-# [lmlnlklk1-lSxli1-si]SQ
- [[ Skipping ]nAP LU lDx lDx3Q]SQ
- [[ Swapping ]nAP LU lDx lDx lmlnlkd1-lSx lk1+sk 2Q]SO
+# [lmlnlklk1-[row]lSxli1-si]SQ
+ [[ Skipping ]nAP LU [dc]lDx [dc]lDx3Q]SQ
+ [[ Swapping ]nAP LU [dc]lDx [dc]lDx lmlnlkd1-[row]lSx lk1+sk 2Q]SY
  [
  [      F called with i = ]n lin [, k = ]n lknAP
     [R]n lin [ = (]n
 
-  lmlnlilklExSU
+  lmlnlilk[matrix]lExSU
   
 #  # Check whether k,k is 0. If it is, we can't perform division, so swap rows k and k-1 and try F again.
 #  [(]n lkn [,]n lkn [) == ]n lUnAP
 #   lU0=Q
 #  # Let's not actually do that just yet
   
-  lmlnlklklEx dSVn [*R]n lin d0=O [ - (]n
+  lmlnlklk[matrix]lEx dSVn [*R]n lin d0=Y [ - (]n
   lm ln li lV
   lUn [)*R]n lkn [)/]n lVn
-#  d0=O
+#  d0=Y
   AP AP
   _1*
   lk LU
   
-  l+x
-  lmlnlilWx
-  lmlnli[lV/]lcx
-  lmlnlilWx
-  LVlDx
+  [row]l+x
+  lmlnli[row]lWx
+  lmlnli[lV/][row]lOx
+  lmlnli[row]lWx
+  LV[dc]lDx
   
-#  lm ln lPx AP
+#  lm ln [matrix]lPx AP
 # [      F exiting with i = ]n lin [, k = ]n lknAP
  ]SF
  []SI
  []SK
 
  [ Attempting row reduction on ]n lmn [ by ]n lnn [ matrix:]n AP AP
- #lm ln lPx AP
+ #lm ln [matrix]lPx AP
  
  lmsk [
 # [  k = ]n lkn [ loop running]nAP
 	   lmsi [
 #	         [    i = ]n lin [ loop running]nAP
 			 lilk!=F
-			 lm ln lPx AP
+			 lm ln [matrix]lPx AP
 			 li1-dsi 0<I
 			]sI li0<I
 	   
@@ -533,12 +535,12 @@
  lmln*sk 1[LU* lk1-dsk 0<K]sK lk0<K
  
  0Li*Lk*Lm*Ln*K+k
- 0L0Z*LFZ*LIZ*LKZ*LOZ*LQZ*K+k
-]sd
+ 0L0Z*LFZ*LIZ*LKZ*LYZ*LQZ*K+k
+] [matrix]Z:D
 
 
 
-# P: Print matrix(m,n)
+# (matrix)P: Print matrix(m,n)
 # @return matrix | TOS
 [
  Sn  # cols
@@ -568,29 +570,29 @@
 		li1-dsi 0<L]sL li0<L
  
  0L Z*L0Z*LLZ*LQZ*LlZ*Li*Lj*Lk*Lm*Ln*K+k
-]sP
+] [matrix]Z:P
 
 # Tests
 #1 2 3 4 5 6 7 8 9
-#5 3 1 lRxf
+#5 3 1 [row]lRxf
 
-#3 3 1 3 lSxfAdPP
-#3 3 2 3 lSxfAdPP
+#3 3 1 3 [row]lSxfAdPP
+#3 3 2 3 [row]lSxfAdPP
 
-#0 0 0 3 3 2 lWxfAdPP
-#386 3 3 2 2 lwxfAdPP
+#0 0 0 3 3 2 [row]lWxfAdPP
+#386 3 3 2 2 [matrix]lWxfAdPP
 
 #0 1 2 3 4 5 6 7 8
 #9 8 7 6 5 4 3 2 1
 
 # 1 2 3 4 5 6 7 8 9 # 3,3 matrix
 # [Matrix A(3,3):]nAP
-# 3 3 lPx AP
+# 3 3 [matrix]lPx AP
 
 # #0 0 _1 0 _1 0 _1 0 0 # 3,3 matrix
 # 1 2 3 4 5 6 # 3,2 matrix
 # [Matrix B(3,2):]nAP
-# 3 2 lPx AP
+# 3 2 [matrix]lPx AP
 
 # # Result should be a 3,2 matrix:
 # #   22  28
@@ -598,21 +600,21 @@
 # #   76  100
 # [Matrix AB:]nAP
 
-# 3 3 2 l*x
-# 3 2 lPx AP
+# 3 3 2 [matrix]l*x
+# 3 2 [matrix]lPx AP
 
 # [Matrix C(3,3):]nAP
 # # Reuse values
-# 3 3 lPx AP
+# 3 3 [matrix]lPx AP
 # [Identity I(3)]nAP
-# 3 lIx
-# 3 3 lPx AP
+# 3 [matrix]lIx
+# 3 3 [matrix]lPx AP
 # [Matrix CI:]nAP
-# 3 3 3 l*x
-# 3 3 lPx
+# 3 3 3 [matrix]l*x
+# 3 3 [matrix]lPx
 # [Matrix IC:]nAP
-# 3 3 3 l*x
-# 3 3 lPx
+# 3 3 3 [matrix]l*x
+# 3 3 [matrix]lPx
 
 # c
 
@@ -623,14 +625,14 @@
 6.2 2 8 1 # 22
 
 [Original matrix:]nAP
-3 4 lPx AP
-#3 3 lPx AP
+3 4 [matrix]lPx AP
+#3 3 [matrix]lPx AP
 [Performing row reduction...]nAP
-3 4 lrx
+3 4 [matrix]lRx
 [Row reduction complete:]nAP
-3 4 lPx AP
+3 4 [matrix]lPx AP
 
 #[Calculating determinant...]nAP
-#3 ldx
+#3 [matrix]lDx
 #[Determinant is:]nAP
 #p
