@@ -1,8 +1,10 @@
 ##  Author:     Joseph Reed
 ##  File:       bit.dc
-##  Version:    1.2
+##  Version:    1.3
 ##  Topic:      Bitwise operations for `dc`
-##  Changes:    Changed NOT from `!' to `~', so `!' can be used by factorial.dc
+##  Changes:    Restored NOT(2) to `!'
+##              Implemented (bitwise) namespace
+##              Added error message to (error) namespace
 ##
 ##  In this file:
 ##
@@ -12,7 +14,7 @@
 ##    |    Bitwise OR     2        1
 ##    ^    Bitwise XOR    2        1
 ##    \    Bitwise NOT    1        1        This function flips the bits of the top number
-##    ~    Bitwise NOT    2        1        This function flips the bits of the top two numbers, using the longer number's length in bits
+##    !    Bitwise NOT    2        1        This function flips the bits of the top two numbers, using the longer number's length in bits
 ## ----------------------------------------
 ##    ?    Error message  0        0        This function displays a message indicating that there are not enough values on the stack
 ##    #    Array to int   A[]      1        This function converts the boolean array A[] to a number and pushes that number on the stack
@@ -30,7 +32,22 @@
 ##  The middle section lists the helper functions. These are persistent macros intended to be called by the operators and each other.
 ##  The bottom section lists the temporary registers. These registers hold transient values or code and are left unchanged at the end of an operation.
 
-[[dc: stack empty]nAP2Q]s?
+
+[Z;&x]s&
+[Z;|x]s|
+[Z;^x]s^
+[Z;\x]s\
+[Z;!x]s!
+[Z;?x]s?
+[Z;Bx]sB
+# Split into two lines so notepad++ doesn't freak out
+[Z;#
+x]s#
+
+
+
+
+[[dc: bitwise: stack empty]nAP2Q] [error]Z:?
 
 [
  0dSaSb                         # initialise temporary a and b              ->a(0),b(0)
@@ -50,8 +67,8 @@
   0<L                           # if 0<Z, repeat                            (0)->
  ]dSLx                          # Loop                                      a[],b[]->A[]
  L$ZLIZLLZLOZLZLaLb++++++0*K+k  # destroy temporary $, a, b, I, L, O, Z     Z(0),a(0),b(0)->
- l#x                            # reassemble number in A and push it        A[]->(0)
-]sB                             # Bitwise operation                         (0,1)->(0)
+ [bitwise] l#x                  # reassemble number in A and push it        A[]->(0)
+] [bitwise]Z:B                  # Bitwise operation                         (0,1)->(0)
 
 [
  lASZ                           # push length of A[] on Z
@@ -66,11 +83,11 @@
  ]dSLx
  LLZLZ+0*K+k                    # destroy temporary L, Z
  LA                             # pop result from A and push it
-]s#                             # #: reassemble number: A[]->(0)
+] [bitwise]Z:#                  # #: reassemble number: A[]->(0)
 
-[z2>?[*]SO lBx]s&               # &: bitwise AND: (0,1)->(0)
-[z2>?[+2%]SO lBx]s^             # ^: bitwise XOR: (0,1)->(0)
-[z2>?[1r-r1r-*1r-]SO lBx]s|     # |: bitwise OR: (0,1)->(0)
+[[error]z3>? Z0*K+k [*]SO [bitwise]lBx] [bitwise]Z:&               # &: bitwise AND: (0,1)->(0)
+[[error]z3>? Z0*K+k [+2%]SO [bitwise]lBx] [bitwise]Z:^             # ^: bitwise XOR: (0,1)->(0)
+[[error]z3>? Z0*K+k [1r-r1r-*1r-]SO [bitwise]lBx] [bitwise]Z:|     # |: bitwise OR:  (0,1)->(0)
 
 [
  0Sa                            # initialise temporary a                    ->a(0)
@@ -86,8 +103,8 @@
   0<L                           # if 0<Z, repeat                            (0)->
  ]dSLx
  L$ZLLZLZLa+++0*K+k             # destroy temporary $, a, L, Z              Z(0),a(0)->
- l#x                            #                                           A[]->(0)
-]s\                             # \: bitwise complement of a (?)            (0)->(0)
+ [bitwise]l#x                   #                                           A[]->(0)
+] [bitwise]Z:\                  # \: bitwise complement of a (?)            (0)->(0)
                                 # aka a=!a
 # {a,b}->{!a,!b} with their own respective widths:
 # r l\x r l\x
@@ -108,7 +125,7 @@
   0<L                           # if 0<Z, repeat                            (0)->
  ]dSLx
  L$ZLIZLLZLZ+++0*K+k            # destroy temporary $, L, Z                 Z(1)->
- l#x                            # push b                                    A[]->(1)
+ [bitwise]l#x                   # push b                                    A[]->(1)
  [
   lZ1-ddd                       # push four copies of --length              Z->(0,1,2,3)
   sZ                            # decrement Z                               (3)->Z
@@ -119,5 +136,19 @@
   0<L                           # if 0<Z, repeat                            (0)->
  ]dSLx
  LLZLZLaLb+++0*K+k              # destroy temporary a, b, L, Z              Z(0),a(0),b(0)->
- l#x                            #                                           A[]->(0)
-]s~                             # ~: bitwise NOT (2 args)
+ [bitwise]l#x                   #                                           A[]->(0)
+] [bitwise]Z:!                  # !: bitwise NOT (2 args)
+
+
+2doi
+
+10010110
+f
+[bitwise]l\x
+f
+10000000
+f
+[bitwise]l!x
+f
+[bitwise]l^x
+f

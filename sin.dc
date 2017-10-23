@@ -1,5 +1,12 @@
 #include factorial.dc
 #include pi.dc
+
+# Function:
+#   (trig)S: Sine
+[Z;Sx]sS
+
+# (trig)S: Sine
+# @return sin(x) | TOS
 [
  0Sk
  [KdSK3+klPx2*0k%LKk1/]Sm # mod 2pi
@@ -11,5 +18,4 @@
  0[lTxd0!=L+]dSLx # calculate terms until next term is 0 (i.e., less than precision)
  lKk 1/
  0LmZ*LLZ*LTZ*Lk*Ln*Lx*LK*K+k
-]sS
-
+] [trig]Z:S

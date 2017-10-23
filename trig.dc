@@ -1,7 +1,19 @@
 # trig.dc
 # Implements pi, factorial, sin, cos
 
+# Functions:
+#   (constants)p: pi
+#   (trig)S: sine
+#   (trig)C: cosine
+#   (dc)!: factorial
+
+[Z;px]sp
+[Z;Sx]sS
+[Z;Cx]sC
+[Z;!x]s!
+
 #ifndef __PI__ // include pi.dc
+# (constants)p: pi
 [
  [lk;M lk12*2+* lk12*6+* lk12*10+* lk1+3^/ lk1+:M]SM
  [lk;L 545140134+ lk1+:L]SL
@@ -19,21 +31,25 @@
  ]ST
  [lkSa 0[lad;Tr1-drsa0!>E+]SE la0!>E 0LEZ*La*K+k]SS
 
- KdSK0k12/1+LKkSn [ln1-dsn 0<J lTx]dSJx lCx lSx /  0LCZ*LJZ*LLZ*LMZ*LSZ*LTZ*LXZ*Lk*Ln*K+k
-]sP
+ KdSK0k12/1+LKkSn [ln1-dsn 0<J lTx]dSJx lCx lSx /
+ 0LCZ*LJZ*LLZ*LMZ*LSZ*LTZ*LXZ*Lk*Ln*K+k
+] [constants]Z:p
 #define __PI__ // pi.dc included
 #endif
 
 #ifndef __FACTORIAL__ // include factorial.dc
-[Sa 1[lad1-dsa0<L*]SL la0<L 0LLZ*La*K+k]s!
+# (dc)!: Factorial
+[Sa 1[lad1-dsa0<L*]SL la0<L 0LLZ*La*K+k] [dc]Z:!
 #define __FACTORIAL__ // factorial.dc included
 #endif
 
 #ifndef __SINE__ // include sin.dc
+# (trig)S: Sine
+# requires (dc)!, (constants)p
 [
  0Sk
- [KdSK3+klPx2*0k%LKk1/]Sm # mod 2pi
- [_1lk^ lxlk2*1+^* lk2*1+l!x / lk1+sk]ST
+ [KdSK3+k[constants]lpx2*0k%LKk1/]Sm # mod 2pi
+ [_1lk^ lxlk2*1+^* lk2*1+[dc]l!x / lk1+sk]ST
  KSK
  KSn
  K2*k
@@ -41,12 +57,14 @@
  0[lTxd0!=L+]dSLx # calculate terms until next term is 0 (i.e., less than precision)
  lKk 1/
  0LmZ*LLZ*LTZ*Lk*Ln*Lx*LK*K+k
-]sS
+] [trig]Z:S
 #define __SINE__ // sin.dc included
 #endif
 
 #ifndef __COSINE__ // define cosine
-[lPx2/r-lSx]sC
+# (trig)C: Cosine
+# requires (trig)S
+[[constants]lpx2/r-[trig]lSx] [trig]Z:C
 #define __COSINE__ // cosine defined
 #endif
 

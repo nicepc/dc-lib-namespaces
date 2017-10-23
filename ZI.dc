@@ -1,3 +1,7 @@
+# Function:
+#   (dc)Z: Count digits with respect to input radix
+[Z;Zx]sZ
+
 [
   [
    0SL                           #  Initialize L
@@ -18,6 +22,7 @@
                                  #  the testing part, but we still need to do the cleanup to restore registers to their original values
   0*                             #  Make residual ToS:=0
   La+                            #  Load length and add it to 0
+# FIXME: Update stack cleanup method
   L-Z L0Z LLZ L+Z +++0* K+k      #  Load macros from registers matching /[-0L+]/, add them, make them 0, and add 0 to the precision
- ]sZ                             # This will be named function Z, after the `Z' command
+ ] [dc]Z:Z                       # This will be named function Z, after the `Z' command
                                  # The primary difference is that this is the length of a number as represented with the input radix

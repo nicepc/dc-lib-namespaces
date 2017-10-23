@@ -1,3 +1,7 @@
+# Function:
+#   (dc)V: Take the b-th root of a
+[Z;Vx]sV
+
 [
 
 # take arguments from stack
@@ -51,4 +55,4 @@ lK1-sK [[sa]sT]sI [[No, that's too large]nAP 0*K+k]sT [Test Round: ]n lalOxdlb^l
 # push our return value
 La
 
-]sV
+] [dc]Z:V
