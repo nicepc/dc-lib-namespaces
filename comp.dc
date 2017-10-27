@@ -1,0 +1,20 @@
+# Functions:
+#	(dc)M: Max
+#	(dc)m: Min
+[Z;Mx]sM
+[Z;mx]sm
+
+
+[
+	[la2Q]SA
+	[lb2Q]SB
+	[SbSalalb>BlAx]x
+	0LAZ*LBZ*La*Lb*K+k
+] [dc]Z:M
+
+[
+	[la2Q]SA
+	[lb2Q]SB
+	[SbSalalb<BlAx]x
+	0LAZ*LBZ*La*Lb*K+k
+] [dc]Z:m
