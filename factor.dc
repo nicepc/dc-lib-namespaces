@@ -19,7 +19,8 @@
 	0Sn		# n: how many factors we've pulled out
 	2Sk		# k: number to test as factor
 	lxv1+Sv	# v: sqrt(x) is upper limit of prime factors
-	
+	0Si		# i: number of tests (temporary)
+	1Sd		# d: testing depth
 	# Smallest prime factor of x:
 	#	for(k = 2; k < sqrt(x); ++k) if(x%k==0) return k;
 	#	return x;
@@ -33,23 +34,32 @@
 	#	lxSf 2sk [lxlk%0=K lk1+dsklxv1+>L]sL lklxv1+>L
 	#	lxlf/sx Lf
 	# Repeat while 1<x:
+#	[
+#		[lksf lkQ]sK
+#		lxSf 2sk [lxlk%0=K li1+si lk1+dsklxv1+>L]sL lklxv1+>L
+#		lxlf/sx Lf
+#		ln1+sn
+#		lx1<M
+#	]sM lx1<M
+	
+	# Improved algorithm: After k=2, increment by two instead of one
 	[
-		[lksf lkQ]sK
-		lxSf 2sk [lxlk%0=K lk1+dsklxv1+>L]sL lklxv1+>L
+		[lksf [Quitting ]n ldnAP ld1sdQ]sK
+		lxSf 2sk
+		[
+			li1+si
+			[Test ]n lin [: ]n lxn [ % ]n lkn [ == ]n lxlk%n AP
+			ld1+sd
+			lxlk%0=K
+			lk d2%+ 1+ dsk lxv1+ >L
+		]sL lklxv1+>L
 		lxlf/sx Lf
 		ln1+sn
 		lx1<M
 	]sM lx1<M
 	
-	# [
-		# [
-			# [M(x=]n lxn [, v=]n lvn [, k=]n lkn [)]n AP
-			# lxlk%0=K
-			# lk1+dsk lv>M
-		# ]sM lklv>M
-		# lxsklKx
-		# lx1<L
-	# ]sL lx1<L
+	# Print number of tests (for debugging)
+	[Tests: ]n LinAP
 	
 	# Push number of factors
 	Ln
@@ -59,8 +69,26 @@
 	LKZ*
 	LLZ*
 	LMZ*
+	Ld*
 	Lx*
 	Lk*
 	Lv*
 	K+k
 ] [dc]Z:F
+
+
+# Function:
+#	(dc)P: Product of n items (basically the inverse of F)
+[Z;Px]sP
+
+[
+	Sn
+	[]SL
+	
+	[ln1-dsn1<L*]sL ln1<L
+	
+	0
+	LLZ*
+	Ln*
+	K+k
+] [dc]Z:P
