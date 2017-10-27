@@ -1,0 +1,66 @@
+# Function:
+#   (dc)F: Factor a number
+#	@return all prime factors numberOfFactors | TOS
+[Z;Fx]sF
+
+[
+	# Declarations and initializations
+	Sx		# x: number to be factored
+	[]SL	# L: loop code
+	[]SM	# M: loop code
+	[
+		lk
+		lxlk/sx
+		lxv1+sv
+		2sk
+		ln1+sn
+		1Q
+	]SK	# K: code to execute if k is a factor
+	0Sn		# n: how many factors we've pulled out
+	2Sk		# k: number to test as factor
+	lxv1+Sv	# v: sqrt(x) is upper limit of prime factors
+	
+	# Smallest prime factor of x:
+	#	for(k = 2; k < sqrt(x); ++k) if(x%k==0) return k;
+	#	return x;
+	#
+	#	[lkdsfQ]sK
+	#	lxSf 2sk [lxlk%0=K lk1+dsklxv1+>L]sL lklxv1+>L
+	#	Lf
+	#
+	# Get smallest factor and divide x:
+	#	[lksf lkQ]sK
+	#	lxSf 2sk [lxlk%0=K lk1+dsklxv1+>L]sL lklxv1+>L
+	#	lxlf/sx Lf
+	# Repeat while 1<x:
+	[
+		[lksf lkQ]sK
+		lxSf 2sk [lxlk%0=K lk1+dsklxv1+>L]sL lklxv1+>L
+		lxlf/sx Lf
+		ln1+sn
+		lx1<M
+	]sM lx1<M
+	
+	# [
+		# [
+			# [M(x=]n lxn [, v=]n lvn [, k=]n lkn [)]n AP
+			# lxlk%0=K
+			# lk1+dsk lv>M
+		# ]sM lklv>M
+		# lxsklKx
+		# lx1<L
+	# ]sL lx1<L
+	
+	# Push number of factors
+	Ln
+	
+	# Clean up mess
+	0
+	LKZ*
+	LLZ*
+	LMZ*
+	Lx*
+	Lk*
+	Lv*
+	K+k
+] [dc]Z:F
