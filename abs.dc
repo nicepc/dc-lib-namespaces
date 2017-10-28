@@ -1,0 +1,8 @@
+# Function:
+#	(dc)|: Absolute value
+[Z;|x]s|
+
+[
+	Sa
+	la2*1+_2%La*
+] [dc]Z:|
