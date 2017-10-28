@@ -1,0 +1,45 @@
+#B := M(|a|,|b|)
+#S := m(|a|,|b|)
+#while S!=0:
+#	R := B % S
+#	B := S
+#	S := R
+#return B
+
+
+# Function:
+#	(dc)G: Greated common divisor
+# requires min, max, abs
+[Z;Gx]sG
+
+[
+	Sb
+	Sa
+	
+	0SB
+	0SS
+	0SR
+	[]SL
+	
+	la [dc]l|x sa
+	lb [dc]l|x sb
+	la lb [dc]lMx sB
+	la lb [dc]lmx sS
+	[
+		lBlS%sR
+		lSsB
+		lRsS
+		lS0!=L
+	]sL lS0!=L
+	
+	lB
+	
+	0
+	Lb*
+	La*
+	LB*
+	LS*
+	LR*
+	LLZ*
+	K+k
+] [dc]Z:G
