@@ -8,6 +8,7 @@
 	Sx		# x: number to be factored
 	[]SL	# L: loop code
 	[]SM	# M: loop code
+	[]SP	# P: debug print code
 	[
 		lk
 		lxlk/sx
@@ -16,6 +17,13 @@
 		ln1+sn
 		1Q
 	]SK	# K: code to execute if k is a factor
+	[lk2+sk]S2	# 2: increment k by 2
+	[]S3
+	[]S5
+	[]S7
+	[]S1
+	[]S0
+	[0*K+k2Q]SQ
 	0Sn		# n: how many factors we've pulled out
 	2Sk		# k: number to test as factor
 	lxv1+Sv	# v: sqrt(x) is upper limit of prime factors
@@ -43,15 +51,64 @@
 #	]sM lx1<M
 	
 	# Improved algorithm: After k=2, increment by two instead of one
+			[[Test ]n lin [: ]n [N]n [ % ]n lkn 
+		#	[ == ]n lxlk%n
+		AP]sP
+	# Check for the following prime factors of k
+	# Generated with: (for /F "usebackq" %A in (`primes 100`) do @echo %Al0x)|gclip
+	[
+		3l0x 
+		5l0x 
+		7l0x 
+		11l0x 
+		13l0x 
+		17l0x 
+		19l0x 
+		23l0x 
+		29l0x 
+		31l0x 
+		37l0x 
+		41l0x 
+		43l0x 
+		47l0x 
+		53l0x 
+		59l0x 
+		61l0x 
+		67l0x 
+		71l0x 
+		73l0x 
+		79l0x 
+		83l0x 
+		89l0x 
+		97l0x
+		
+		113l0x
+		127l0x
+		359l0x
+		521l0x
+		571l0x
+		
+		lk 10%5=2
+	]s1
+	
+	[dlkr!<Q lkr%0=2]s0
 	[
 		[lksf [Quitting ]n ldnAP ld1sdQ]sK
 		lxSf 2sk
 		[
 			li1+si
-			[Test ]n lin [: ]n lxn [ % ]n lkn [ == ]n lxlk%n AP
+			li 10 3^ %0=P
 			ld1+sd
 			lxlk%0=K
-			lk d2%+ 1+ dsk lxv1+ >L
+			lk d2%+ 1+ sk
+			lk 10%5=2
+#			[lk3%0=2]s3 #lk3%0=3
+#			[lk5%0=2]s5 #lk5%0=5
+#			[lk7%0=2]s7 #lk7%0=7
+
+			l1x l1x l1x l1x
+
+			lklxv1+ >L
 		]sL lklxv1+>L
 		lxlf/sx Lf
 		ln1+sn
@@ -69,6 +126,14 @@
 	LKZ*
 	LLZ*
 	LMZ*
+	LPZ*
+	LQZ*
+	L2Z*
+	L3Z*
+	L5Z*
+	L7Z*
+	L1Z*
+	L0Z*
 	Ld*
 	Lx*
 	Lk*
@@ -92,3 +157,7 @@
 	Ln*
 	K+k
 ] [dc]Z:P
+
+
+# Factorization test
+1238926361552897 93461639715357977769163558199606896584051237541638188580280321* [dc]lFx
