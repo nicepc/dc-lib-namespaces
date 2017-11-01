@@ -1,0 +1,29 @@
+# xorshift1024* via Wikipedia
+#include (bitwise)
+### Setup
+# Requires s[],p,0,1 to be available whenever (dc)? is called
+0Ss
+0Sp
+0S0 # s0
+0S1 # s1
+[zdd1+r:s]SI
+# initialize 16 values in s[]
+# TODO: More creative ways of seeding s[]
+# TODO: Put all this in a function to re-seed PRNG
+lIxlIxlIxlIx
+lIxlIxlIxlIx
+lIxlIxlIxlIx
+lIxlIxlIxlIx
+0LIZ*K+k
+c
+### Function
+# (dc)?: Pseudo-random number
+[Z;?x]s?
+[
+lp;ss0
+lp1+15[bitwise]l&xsp
+lp;ss1
+l1d 2 31^* [bitwise]l^x s1
+l1 l0 [bitwise]l^x l1 2 11^/ [bitwise]l^x l0 2 30^/ [bitwise]l^x lp:s
+lp;s1181783497276652981*
+] [dc]Z:?
