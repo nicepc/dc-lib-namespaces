@@ -140,15 +140,15 @@ x]s#
 ] [bitwise]Z:!                  # !: bitwise NOT (2 args)
 
 
-2doi
+#2doi
 
-10010110
-f
-[bitwise]l\x
-f
-10000000
-f
-[bitwise]l!x
-f
-[bitwise]l^x
-f
+#10010110
+#f
+#[bitwise]l\x
+#f
+#10000000
+#f
+#[bitwise]l!x
+#f
+#[bitwise]l^x
+#f
