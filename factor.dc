@@ -7,20 +7,11 @@
 	# Declarations and initializations
 	Sx		# x: number to be factored
 	lxZ6/10r^Sp # p: how often to print tests
-	10 3^sp	# override
+	10 4^sp	# override
 	[]SL	# L: loop code
 	[]SM	# M: loop code
 	[]SP	# P: debug print code
-	# The following is overridden below
-	[
-		1s?	# Indicate that we've found a factor, so stop looping
-		lk
-		lxlk/sx
-		lxv1+sv
-		2sk
-		ln1+sn
-		1Q
-	]SK	# K: code to execute if k is a factor
+	[]SK	# K: code to execute if k is a factor
 	[lk2+sk]S2	# 2: increment k by 2
 	[]S+
 	[]S3
@@ -44,10 +35,10 @@
 
 	# P: Print test counter and factor being tested
 	[
-		[Test ]n lin [: ]n [N]n [ % ]n lkn 
-#		[Test ]n lin [: ]n lxn [ % ]n lkn 
-#			[ == ]n lxlk%n
-			[ : ]n K 4k lkli/n k
+		[Test ]n lin [: ]n9P [N]n [ % ]n lkn 
+#		[Test ]n lin [: ]n9P lxn [ % ]n lkn 
+#			[ == ]n9P lxlk%n
+			[ : ]n9P K 4k lkli/n k
 	AP]sP
 
 	# 0: If k is divisible by and greater than the TOS, increment k by 2
@@ -133,8 +124,8 @@
 		109l0x 
 		107l0x 
 		103l0x 
-		101l0x 
-		97l0x 
+		101l0x ]Z0*K+k
+	[	97l0x 
 		89l0x 
 		83l0x 
 		79l0x 
@@ -157,9 +148,10 @@
 		11l0x 
 		7l0x 
 		5l0x 
-		3l0x]
+		3l0x] #Z0*K+k
 #		x							# Use this line for thoroughness. k:i peaks at around 11.7376, 751207:64000
-		Z0*K+k 11l0x 7l0x 5l0x 3l0x	# Use this line for speed. k:i stabilizes around 4.8124
+		Z0*K+k 7l0x 5l0x 3l0x	# Use this line for speed. k:i stabilizes around 3.7499
+					# Add more checks to increase ratio
 		
 		lkLT=+
 		
@@ -184,12 +176,12 @@
 		0s$ # indicate that we haven't tested this k for primality
 #	# Additional case: If last digit of k is 5, increment by two
 #		lk 10%5=2
-	# Function `l' from above tests the next number to see if it's composite with any of the listed numbers as factors.
+	# Function `1' from above tests the next number to see if it's composite with any of the listed numbers as factors.
 	# We can run this as many times as we want, but we can't guarantee a prime number without a recursive solution (or factoring).
 	# Adding more repetitions helps filter numbers, but I think (?) that
 	# the benefits of this diminish quickly due to the sharp decrease in performance.
 	# Edit: If a value passes through a single iteration of the filter unscathed, the rest of the cycles should skip themselves.
-		l1x l1x l1x l1x l1x l1x l1x l1x l1x l1x l1x #l1x l1x l1x l1x l1x
+		l1x l1x l1x l1x #l1x l1x l1x l1x l1x l1x l1x l1x l1x l1x l1x l1x
 		ld lr<R
 		lklxv1+>L
 		1s?
@@ -200,7 +192,7 @@
 		0s?
 		lxSf # 2sk
 		
-		lklxv1+>L
+		lklv>L
 	# Each statement of `l?0=L' continues the loop if necessary. Increasing the number of these shouldn't hurt performance,
 	# but the statement can't be nested, because that would defeat the purpose. (The purpose is to prevent a stack overflow.)
 		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
@@ -208,8 +200,14 @@
 		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
 		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
 		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
+		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
+		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
+		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
+		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
+		l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L l?0=L 
 		
 		lxlf/sx Lf APdnAP
+		lxv1+sv
 		ln1+sn
 		lx1<M
 	]sM lx1<M
